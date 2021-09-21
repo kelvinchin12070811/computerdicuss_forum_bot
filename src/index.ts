@@ -4,6 +4,8 @@ import { config } from 'dotenv';
 import { Client, Intents } from 'discord.js';
 
 import { returnSticker } from './sticker_handler';
+import { sequelize } from './db/database_provider';
+import Sticker from './db/datatype/sticker';
 
 config();
 
@@ -43,6 +45,10 @@ const rest = new REST({ version: '9' }).setToken(TOKEN);
         else {
             console.log('GUILD_ID not set, bot still work but no application (/) commands.');
         }
+
+        console.log('Initializing database');
+        await sequelize.sync();
+        await Sticker.create({ 'keyword': 'tst', 'uri': 'test.com' });
     }
     catch (error) {
         console.log({ error });
