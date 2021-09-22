@@ -4,6 +4,10 @@ export const commands = [
         description: 'reply with pong',
     },
     {
+        name: 'list_sticker',
+        description: 'Get all stickers\' name stored in the library',
+    },
+    {
         name: 'sticker',
         description: 'Send a sticker to command invoked channel',
         options: [

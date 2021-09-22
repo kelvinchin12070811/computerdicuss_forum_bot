@@ -10,6 +10,7 @@ import { commands } from './commands';
 import { renameSticker } from './commands/rename_sticker';
 import { removeSticker } from './commands/remove_sticker';
 import { changeSticer } from './commands/change_sticker';
+import { listSticker } from './commands/list_sticker';
 
 config();
 
@@ -59,6 +60,10 @@ client.on('interactionCreate', async interation => {
     switch (interation.commandName) {
         case 'ping':
             await interation.reply('Pong!');
+            break;
+
+        case 'list_sticker':
+            listSticker(interation, client);
             break;
 
         case 'sticker':
