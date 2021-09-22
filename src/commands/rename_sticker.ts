@@ -6,7 +6,7 @@ import {
 import Sticker from '../db/datatype/sticker';
 
 export const renameSticker = async (interaction: CommandInteraction, client: Client) => {
-    if (!(interaction.member?.permissions as Permissions).has(Permissions.STAGE_MODERATOR)) {
+    if (!(interaction.member?.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)) {
         await interaction.reply('You don\'t have permission to access this command');
         return;
     }

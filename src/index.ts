@@ -89,11 +89,15 @@ client.on('messageCreate', async message => {
     if (message.author.bot) return;
 
     if (message.content === '???server id???') {
-        if (!message.member?.permissions.has(Permissions.STAGE_MODERATOR))
-            return;
-
         if (GUILD_ID) return;
+
+        if (!message.member?.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+            console.log(`${message.author.username}'s interaction has been rejected'`);
+            return;
+        }
+
         await message.author.send({ content: `your server id is ${message.guildId}` });
+        await message.reply('Server id has been sent to your DM');
     }
 });
 
