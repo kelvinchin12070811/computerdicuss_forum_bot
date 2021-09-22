@@ -22,5 +22,5 @@ export const renameSticker = async (interaction: CommandInteraction, client: Cli
 
     (targetSticker as any).keyword = newStickerName;
     targetSticker.save();
-    await interaction.reply(`Sticker's name changed`);
+    await interaction.reply(`Sticker ${stickerName}'s name changed to ${newStickerName}`);
 }

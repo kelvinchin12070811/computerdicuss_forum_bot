@@ -15,5 +15,5 @@ export const addSticker = async (interaction: CommandInteraction, client: Client
     const stickerName = interaction.options.get('sticker_name')?.value as string;
     const stickerURI = interaction.options.get('uri')?.value as string;
     await Sticker.create({ keyword: stickerName, uri: stickerURI });
-    await interaction.reply('Sticker added to library');
+    await interaction.reply(`Sticker ${stickerName} added to library`);
 }
