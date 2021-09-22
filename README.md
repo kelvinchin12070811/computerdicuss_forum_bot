@@ -1,6 +1,6 @@
 # CDASA_
 
-
+An internal bot implementation for a discord community.
 
 ## Getting started
 
