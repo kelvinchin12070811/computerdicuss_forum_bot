@@ -20,6 +20,18 @@ export const commands = [
         ]
     },
     {
+        name: 'preview_sticker',
+        description: 'Preview a sticker, message will auto delete after certain amount of time',
+        options: [
+            {
+                name: 'sticker_name',
+                description: 'Unique id or name of the sticker',
+                type: 3,
+                required: true,
+            },
+        ],
+    },
+    {
         name: 'add_sticker',
         description: 'Add sticker to the library, only admin can access this command',
         options: [

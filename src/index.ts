@@ -11,6 +11,7 @@ import { renameSticker } from './commands/rename_sticker';
 import { removeSticker } from './commands/remove_sticker';
 import { changeSticer } from './commands/change_sticker';
 import { listSticker } from './commands/list_sticker';
+import { previewSticker } from './commands/preview_sticker';
 
 config();
 
@@ -70,6 +71,10 @@ client.on('interactionCreate', async interation => {
             const stickerName = interation.options.get('sticker_name');
             const stickerURI = await returnSticker(stickerName?.value as string);
             await interation.reply(stickerURI);
+            break;
+
+        case 'preview_sticker':
+            previewSticker(interation, client);
             break;
 
         case 'add_sticker':
