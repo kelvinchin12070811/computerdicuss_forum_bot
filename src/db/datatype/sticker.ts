@@ -10,6 +10,10 @@ Sticker.init({
     uri: {
         type: DataTypes.STRING,
     },
-}, { sequelize, modelName: 'sticker' });
+}, {
+    sequelize,
+    modelName: 'sticker',
+    timestamps: false,
+});
 
 export default Sticker;

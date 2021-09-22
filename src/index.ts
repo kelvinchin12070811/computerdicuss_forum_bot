@@ -1,11 +1,12 @@
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { config } from 'dotenv';
-import { Client, Intents } from 'discord.js';
+import { Client, Intents, Permissions } from 'discord.js';
 
-import { returnSticker } from './sticker_handler';
+import { returnSticker } from './commands/sticker';
 import { sequelize } from './db/database_provider';
-import Sticker from './db/datatype/sticker';
+import { addSticker } from './commands/add_sticker';
+import { commands } from './commands';
 
 config();
 
@@ -13,25 +14,6 @@ const TOKEN = process.env.TOKEN as string;
 const CLIENT_ID = process.env.CLIENT_ID as string;
 const GUILD_ID = process.env.GUILD_ID as string;
 //const GUILD_ID = null;
-
-const commands = [
-    {
-        name: 'ping',
-        description: 'reply with pong',
-    },
-    {
-        name: 'sticker',
-        description: 'Send a sticker to command invoked channel',
-        options: [
-            {
-                'name': 'sticker_name',
-                'description': 'Unique id or name of the sticker',
-                'type': 3,
-                'required': true,
-            },
-        ]
-    },
-];
 
 const rest = new REST({ version: '9' }).setToken(TOKEN);
 
@@ -48,7 +30,6 @@ const rest = new REST({ version: '9' }).setToken(TOKEN);
 
         console.log('Initializing database');
         await sequelize.sync();
-        await Sticker.create({ 'keyword': 'tst', 'uri': 'test.com' });
     }
     catch (error) {
         console.log({ error });
@@ -72,25 +53,32 @@ client.on('ready', () => {
 client.on('interactionCreate', async interation => {
     if (!interation.isCommand()) return;
 
-    if (interation.commandName === 'ping') {
-        await interation.reply('Pong!');
-        return;
-    }
+    switch (interation.commandName) {
+        case 'ping':
+            await interation.reply('Pong!');
+            break;
 
-    if (interation.commandName === 'sticker') {
-        const stickerName = interation.options.get('sticker_name');
-        await interation.reply(returnSticker(stickerName?.value as string));
-        return;
-    }
+        case 'sticker':
+            const stickerName = interation.options.get('sticker_name');
+            const stickerURI = await returnSticker(stickerName?.value as string);
+            await interation.reply(stickerURI);
+            break;
 
+        case 'add_sticker':
+            addSticker(interation, client);
+            break;
+    }
 });
 
 client.on('messageCreate', async message => {
     if (message.author.bot) return;
 
     if (message.content === '???server id???') {
-        await message.reply({ content: message.guildId });
-        return;
+        if (!message.member?.permissions.has(Permissions.STAGE_MODERATOR))
+            return;
+
+        if (GUILD_ID) return;
+        await message.author.send({ content: `your server id is ${message.guildId}` });
     }
 });
 
