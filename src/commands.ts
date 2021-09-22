@@ -63,4 +63,22 @@ export const commands = [
             }
         ],
     },
+    {
+        name: 'change_sticker',
+        description: 'Change the sticker assigned to the sticker name, only admin can access this command',
+        options: [
+            {
+                name: 'sticker_name',
+                description: 'Unique id or name used to define the sticker',
+                type: 3,
+                required: true,
+            },
+            {
+                name: 'uri',
+                description: 'URI to locate the new sticker',
+                type: 3,
+                required: true,
+            },
+        ],
+    },
 ];

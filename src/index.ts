@@ -9,6 +9,7 @@ import { addSticker } from './commands/add_sticker';
 import { commands } from './commands';
 import { renameSticker } from './commands/rename_sticker';
 import { removeSticker } from './commands/remove_sticker';
+import { changeSticer } from './commands/change_sticker';
 
 config();
 
@@ -76,6 +77,10 @@ client.on('interactionCreate', async interation => {
 
         case 'remove_sticker':
             removeSticker(interation, client);
+            break;
+
+        case 'change_sticker':
+            changeSticer(interation, client);
             break;
     }
 });
