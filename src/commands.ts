@@ -31,6 +31,24 @@ export const commands = [
                 type: 3,
                 required: true,
             }
-        ]
+        ],
+    },
+    {
+        name: 'rename_sticker',
+        description: 'Rename the name of the sticker, only admin can access this command',
+        options: [
+            {
+                name: 'sticker_name',
+                description: 'Unique id or name used to define the sticker',
+                type: 3,
+                required: true,
+            },
+            {
+                name: 'new_sticker_name',
+                description: 'New unique id to define the sticker',
+                type: 3,
+                required: true,
+            },
+        ],
     },
 ];

@@ -7,6 +7,7 @@ import { returnSticker } from './commands/sticker';
 import { sequelize } from './db/database_provider';
 import { addSticker } from './commands/add_sticker';
 import { commands } from './commands';
+import { renameSticker } from './commands/rename_sticker';
 
 config();
 
@@ -66,6 +67,10 @@ client.on('interactionCreate', async interation => {
 
         case 'add_sticker':
             addSticker(interation, client);
+            break;
+
+        case 'rename_sticker':
+            renameSticker(interation, client);
             break;
     }
 });
