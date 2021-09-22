@@ -8,6 +8,7 @@ import { sequelize } from './db/database_provider';
 import { addSticker } from './commands/add_sticker';
 import { commands } from './commands';
 import { renameSticker } from './commands/rename_sticker';
+import { removeSticker } from './commands/remove_sticker';
 
 config();
 
@@ -71,6 +72,10 @@ client.on('interactionCreate', async interation => {
 
         case 'rename_sticker':
             renameSticker(interation, client);
+            break;
+
+        case 'remove_sticker':
+            removeSticker(interation, client);
             break;
     }
 });

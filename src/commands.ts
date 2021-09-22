@@ -51,4 +51,16 @@ export const commands = [
             },
         ],
     },
+    {
+        name: 'remove_sticker',
+        description: 'Remove a sticker from library, only admin can access this command',
+        options: [
+            {
+                name: 'sticker_name',
+                description: 'Unique id or name used to define the sticker',
+                type: 3,
+                required: true,
+            }
+        ],
+    },
 ];
