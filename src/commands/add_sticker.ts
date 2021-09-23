@@ -12,7 +12,7 @@ export const addSticker = async (interaction: CommandInteraction, client: Client
         return;
     }
 
-    const stickerName = interaction.options.get('sticker_name')?.value as string;
+    const stickerName = (interaction.options.get('sticker_name')?.value as string).toLowerCase();
     const stickerURI = interaction.options.get('uri')?.value as string;
 
     if ((await Sticker.findOne({ where: { keyword: stickerName } })) !== null) {

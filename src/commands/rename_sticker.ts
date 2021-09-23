@@ -11,8 +11,8 @@ export const renameSticker = async (interaction: CommandInteraction, client: Cli
         return;
     }
 
-    const stickerName = interaction.options.get('sticker_name')?.value as string;
-    const newStickerName = interaction.options.get('new_sticker_name')?.value as string;
+    const stickerName = (interaction.options.get('sticker_name')?.value as string).toLowerCase();
+    const newStickerName = (interaction.options.get('new_sticker_name')?.value as string).toLowerCase();
     const targetSticker = await Sticker.findOne({ where: { keyword: stickerName } });
 
     if (targetSticker === null) {

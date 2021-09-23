@@ -11,7 +11,7 @@ export const removeSticker = async (interaction: CommandInteraction, client: Cli
         return;
     }
 
-    const stickerName = interaction.options.get('sticker_name')?.value as string;
+    const stickerName = (interaction.options.get('sticker_name')?.value as string).toLowerCase();
     const sticker = await Sticker.findOne({ where: { keyword: stickerName } });
 
     if (sticker === null) {

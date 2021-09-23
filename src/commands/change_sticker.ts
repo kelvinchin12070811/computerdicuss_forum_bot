@@ -11,7 +11,7 @@ export const changeSticer = async (interaction: CommandInteraction, client: Clie
         return;
     }
 
-    const stickerName = interaction.options.get('sticker_name')?.value as string;
+    const stickerName = (interaction.options.get('sticker_name')?.value as string).toLowerCase();
     const stickerURI = interaction.options.get('uri')?.value as string;
     const sticker = await Sticker.findOne({ where: { keyword: stickerName } });
 
