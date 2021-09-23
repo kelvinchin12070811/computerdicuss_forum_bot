@@ -82,6 +82,10 @@ client.on('messageCreate', async message => {
     }
 });
 
-client.login(TOKEN);
+console.log('\nApplication Command form sent to Discord:');
 console.log(JSON.stringify(getRegistredCommand()));
+
+console.log('\nRegistered command invokers:');
 console.log(getCommandsRegristrationList());
+
+client.login(TOKEN);

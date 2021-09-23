@@ -1,6 +1,7 @@
 // Force registration in the commands to run.
 import './commands/add_sticker';
 import './commands/sticker';
+import './commands/change_sticker';
 
 export const commands = [
     {
@@ -51,24 +52,6 @@ export const commands = [
                 type: 3,
                 required: true,
             }
-        ],
-    },
-    {
-        name: 'change_sticker',
-        description: 'Change the sticker assigned to the sticker name, only admin can access this command',
-        options: [
-            {
-                name: 'sticker_name',
-                description: 'Unique id or name used to define the sticker',
-                type: 3,
-                required: true,
-            },
-            {
-                name: 'uri',
-                description: 'URI to locate the new sticker',
-                type: 3,
-                required: true,
-            },
         ],
     },
 ];

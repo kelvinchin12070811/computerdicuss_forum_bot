@@ -3,9 +3,16 @@ import {
     Client,
     Permissions,
 } from 'discord.js';
-import Sticker from '../db/datatype/sticker';
 
-export const changeSticer = async (interaction: CommandInteraction, client: Client) => {
+import Sticker from '../db/datatype/sticker';
+import { registerCommand } from './CommandFactory';
+
+/**
+ * Allow an admin to update the sticker URI.
+ * @param interaction Interaction that triggered this command.
+ * @param client Current bot client where the command run.
+ */
+const changeSticer = async (interaction: CommandInteraction, client: Client) => {
     if (!(interaction.member?.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)) {
         await interaction.reply('You do not have permission to access this command');
         return;
@@ -24,3 +31,21 @@ export const changeSticer = async (interaction: CommandInteraction, client: Clie
     await sticker.save();
     await interaction.reply(`Sticker ${stickerName}'s uri has been updated`);
 }
+
+registerCommand('change_sticker', changeSticer, {
+    description: 'Change the sticker assigned to the sticker name, only admin can access this command',
+    options: [
+        {
+            name: 'sticker_name',
+            description: 'Unique id or name used to define the sticker',
+            type: 3,
+            required: true,
+        },
+        {
+            name: 'uri',
+            description: 'URI to locate the new sticker',
+            type: 3,
+            required: true,
+        },
+    ],
+});
