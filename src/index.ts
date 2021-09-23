@@ -3,15 +3,14 @@ import { Routes } from 'discord-api-types/v9';
 import { config } from 'dotenv';
 import { Client, Intents, Permissions } from 'discord.js';
 
-import { returnSticker } from './commands/sticker';
 import { sequelize } from './db/database_provider';
-import { addSticker } from './commands/add_sticker';
-import { commands } from './commands';
-import { renameSticker } from './commands/rename_sticker';
-import { removeSticker } from './commands/remove_sticker';
-import { changeSticer } from './commands/change_sticker';
-import { listSticker } from './commands/list_sticker';
-import { previewSticker } from './commands/preview_sticker';
+import './commands';
+
+import {
+    getRegistredCommand,
+    getCommandsRegristrationList,
+    CommandInvoker,
+} from './commands/CommandFactory';
 
 config();
 
@@ -26,7 +25,7 @@ const rest = new REST({ version: '9' }).setToken(TOKEN);
     try {
         console.log('Started refreshing application (/) commands.');
         if (!!GUILD_ID) {
-            await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands });
+            await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: getRegistredCommand() });
             console.log('Successfully reloaded application (/) commands.');
         }
         else {
@@ -55,44 +54,16 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user?.tag}`);
 });
 
-client.on('interactionCreate', async interation => {
-    if (!interation.isCommand()) return;
+client.on('interactionCreate', async interaction => {
+    if (!interaction.isCommand()) return;
 
-    switch (interation.commandName) {
+    switch (interaction.commandName) {
         case 'ping':
-            await interation.reply('Pong!');
-            break;
-
-        case 'list_sticker':
-            listSticker(interation, client);
-            break;
-
-        case 'sticker':
-            const stickerName = interation.options.get('sticker_name');
-            const stickerURI = await returnSticker(stickerName?.value as string);
-            await interation.reply(stickerURI);
-            break;
-
-        case 'preview_sticker':
-            previewSticker(interation, client);
-            break;
-
-        case 'add_sticker':
-            addSticker(interation, client);
-            break;
-
-        case 'rename_sticker':
-            renameSticker(interation, client);
-            break;
-
-        case 'remove_sticker':
-            removeSticker(interation, client);
-            break;
-
-        case 'change_sticker':
-            changeSticer(interation, client);
+            await interaction.reply('Pong!');
             break;
     }
+
+    (getCommandsRegristrationList()[interaction.commandName] as CommandInvoker)(interaction, client);
 });
 
 client.on('messageCreate', async message => {
@@ -112,3 +83,5 @@ client.on('messageCreate', async message => {
 });
 
 client.login(TOKEN);
+console.log(JSON.stringify(getRegistredCommand()));
+console.log(getCommandsRegristrationList());
