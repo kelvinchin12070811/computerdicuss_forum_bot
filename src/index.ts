@@ -1,3 +1,8 @@
+/***********************************************************************************************************************
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ **********************************************************************************************************************/
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { config } from 'dotenv';
