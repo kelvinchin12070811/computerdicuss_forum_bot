@@ -1,2 +1,6 @@
+title BreadAutomation
 @echo off
-yarn start
+:start
+	yarn start
+timeout 5
+goto :start
