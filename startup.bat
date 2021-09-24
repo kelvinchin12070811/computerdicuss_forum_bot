@@ -3,4 +3,5 @@ title BreadAutomation
 :start
 	yarn start
 timeout 5
+pause
 goto :start

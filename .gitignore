@@ -2,3 +2,4 @@
 /build/**
 .env
 application.db
+yarn-error.log
