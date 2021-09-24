@@ -32,6 +32,10 @@ export const renameSticker = async (interaction: CommandInteraction, client: Cli
         return;
     }
 
+    if ((await Sticker.findOne({ where: { keyword: newStickerName } })) != null) {
+        await interaction.reply(`There's already a sticker called ${newStickerName}`)
+    }
+
     (targetSticker as any).keyword = newStickerName;
     targetSticker.save();
     await interaction.reply(`Sticker ${stickerName}'s name changed to ${newStickerName}`);
