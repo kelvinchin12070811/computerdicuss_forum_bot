@@ -8,8 +8,13 @@
 
 ## 目标进度
 --系统建设--
+<<<<<<< HEAD
 - [ ] [基础建设]
 - [ ] [表情系统]
+=======
+- [√] [基础建设]
+- [√] [表情系统]
+>>>>>>> d042e0587a6ca1172f378d3ee8056540443cd3d1
 - [ ] [网页管理系统]
 - [ ] [身份组管理系统]
 - [ ] [玩家资料变化系统]
@@ -30,9 +35,9 @@
 
 
 ```
+git clone https://gitlab.com/kelvinchin12070811/cdasa_dc_bot.git
 npm -g install yarn
 yarn install
 yarn build
 node ./build/index.js
 ```
-
