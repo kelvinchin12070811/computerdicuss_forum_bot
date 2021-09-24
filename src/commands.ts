@@ -5,10 +5,4 @@ import './commands/change_sticker';
 import './commands/list_sticker';
 import './commands/preview_sticker';
 import './commands/remove_sticker';
-
-export const commands = [
-    {
-        name: 'ping',
-        description: 'reply with pong',
-    },
-];
+import './commands/ping';
