@@ -30,6 +30,7 @@
 
 
 ```
+git clone https://gitlab.com/kelvinchin12070811/cdasa_dc_bot.git
 npm -g install yarn
 yarn install
 yarn build
