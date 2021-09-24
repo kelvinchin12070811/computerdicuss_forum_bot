@@ -11,4 +11,3 @@ import './commands/list_sticker';
 import './commands/preview_sticker';
 import './commands/remove_sticker';
 import './commands/rename_sticker';
-import './commands/ping';
