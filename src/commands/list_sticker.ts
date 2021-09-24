@@ -5,8 +5,14 @@ import {
 import { Op } from 'sequelize';
 
 import Sticker from '../db/datatype/sticker';
+import { registerCommand } from './CommandFactory';
 
-export const listSticker = async (interaction: CommandInteraction, client: Client) => {
+/**
+ * List all sticker stored in the library.
+ * @param interaction Interaction that invoked this command.
+ * @param client Current bot client that handling this command.
+ */
+const listSticker = async (interaction: CommandInteraction, client: Client) => {
     const stickers = (await Sticker.findAll({
         where: {
             keyword: {
@@ -18,3 +24,7 @@ export const listSticker = async (interaction: CommandInteraction, client: Clien
     const stickerNames = stickers.join(', ');
     await interaction.reply(`Here are all available stickers:\n${stickerNames}`);
 }
+
+registerCommand('list_sticker', listSticker, {
+    description: 'Get all stickers\' name stored in the library',
+});

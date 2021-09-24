@@ -3,9 +3,16 @@ import {
     Client,
     Permissions,
 } from 'discord.js';
-import Sticker from '../db/datatype/sticker';
 
-export const removeSticker = async (interaction: CommandInteraction, client: Client) => {
+import Sticker from '../db/datatype/sticker';
+import { registerCommand } from './CommandFactory';
+
+/**
+ * Allow admin to remove a sticker from the library.
+ * @param interaction Interaction that triggered this command.
+ * @param client Client that called this command.
+ */
+const removeSticker = async (interaction: CommandInteraction, client: Client) => {
     if (!(interaction.member?.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)) {
         await interaction.reply('You do not have permission to access this command');
         return;
@@ -22,3 +29,15 @@ export const removeSticker = async (interaction: CommandInteraction, client: Cli
     await sticker.destroy();
     await interaction.reply(`Sticker ${stickerName} has been removed`);
 }
+
+registerCommand('remove_sticker', removeSticker, {
+    description: 'Remove a sticker from library, only admin can access this command',
+    options: [
+        {
+            name: 'sticker_name',
+            description: 'Unique id or name used to define the sticker',
+            type: 3,
+            required: true,
+        }
+    ],
+});

@@ -2,56 +2,13 @@
 import './commands/add_sticker';
 import './commands/sticker';
 import './commands/change_sticker';
+import './commands/list_sticker';
+import './commands/preview_sticker';
+import './commands/remove_sticker';
 
 export const commands = [
     {
         name: 'ping',
         description: 'reply with pong',
-    },
-    {
-        name: 'list_sticker',
-        description: 'Get all stickers\' name stored in the library',
-    },
-    {
-        name: 'preview_sticker',
-        description: 'Preview a sticker, message will auto delete after certain amount of time',
-        options: [
-            {
-                name: 'sticker_name',
-                description: 'Unique id or name of the sticker',
-                type: 3,
-                required: true,
-            },
-        ],
-    },
-    {
-        name: 'rename_sticker',
-        description: 'Rename the name of the sticker, only admin can access this command',
-        options: [
-            {
-                name: 'sticker_name',
-                description: 'Unique id or name used to define the sticker',
-                type: 3,
-                required: true,
-            },
-            {
-                name: 'new_sticker_name',
-                description: 'New unique id to define the sticker',
-                type: 3,
-                required: true,
-            },
-        ],
-    },
-    {
-        name: 'remove_sticker',
-        description: 'Remove a sticker from library, only admin can access this command',
-        options: [
-            {
-                name: 'sticker_name',
-                description: 'Unique id or name used to define the sticker',
-                type: 3,
-                required: true,
-            }
-        ],
     },
 ];

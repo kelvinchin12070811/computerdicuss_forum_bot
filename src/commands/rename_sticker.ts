@@ -3,8 +3,15 @@ import {
     Client,
     Permissions,
 } from 'discord.js';
-import Sticker from '../db/datatype/sticker';
 
+import Sticker from '../db/datatype/sticker';
+import { registerCommand } from './CommandFactory';
+
+/**
+ * Allow an admin to rename the sticker. As add_sticker it must be unique.
+ * @param interaction Interaction that invoke this command.
+ * @param client Client that called this command..
+ */
 export const renameSticker = async (interaction: CommandInteraction, client: Client) => {
     if (!(interaction.member?.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)) {
         await interaction.reply('You don\'t have permission to access this command');
@@ -24,3 +31,21 @@ export const renameSticker = async (interaction: CommandInteraction, client: Cli
     targetSticker.save();
     await interaction.reply(`Sticker ${stickerName}'s name changed to ${newStickerName}`);
 }
+
+registerCommand('rename_sticker', renameSticker, {
+    description: 'Rename the name of the sticker, only admin can access this command',
+    options: [
+        {
+            name: 'sticker_name',
+            description: 'Unique id or name used to define the sticker',
+            type: 3,
+            required: true,
+        },
+        {
+            name: 'new_sticker_name',
+            description: 'New unique id to define the sticker',
+            type: 3,
+            required: true,
+        },
+    ],
+});
