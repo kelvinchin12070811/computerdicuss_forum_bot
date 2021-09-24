@@ -57,12 +57,6 @@ client.on('ready', () => {
 client.on('interactionCreate', async interaction => {
     if (!interaction.isCommand()) return;
 
-    switch (interaction.commandName) {
-        case 'ping':
-            await interaction.reply('Pong!');
-            break;
-    }
-
     (getCommandsRegristrationList()[interaction.commandName] as CommandInvoker)(interaction, client);
 });
 
