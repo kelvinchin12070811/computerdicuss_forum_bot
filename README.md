@@ -18,7 +18,7 @@
 - [ ] [公告系统]
 
 --优化系统--
-- [ ] [美化指令系统]
+- [x] [美化指令系统]
 - [ ] [汉化]
 - [ ] [优化系统使用资源]
 
@@ -30,7 +30,7 @@
 
 
 ```
-git clone https://gitlab.com/kelvinchin12070811/cdasa_dc_bot.git
+git clone https://github.com/kelvinchin12070811/computerdicuss_forum_bot.git
 npm -g install yarn
 yarn install
 yarn build
