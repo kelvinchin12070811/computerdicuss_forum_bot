@@ -12,3 +12,4 @@ import './commands/preview_sticker';
 import './commands/remove_sticker';
 import './commands/rename_sticker';
 import './commands/sticker';
+import './commands/help';
