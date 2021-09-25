@@ -20,6 +20,7 @@ const ping = async (interaction: CommandInteraction, client: Client) => {
     const latency = Date.now() - interaction.createdTimestamp;
     const embed = new MessageEmbed()
         .setColor('#00ff00')
+        .setThumbnail('https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png')
         .setTitle('Ping')
         .addFields(
             { name: 'Bot Latency', value: `${latency}ms` },

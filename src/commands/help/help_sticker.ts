@@ -9,21 +9,22 @@ import { registerCommand } from '../CommandFactory';
 const helpSticker = async (interaction: CommandInteraction, client: Client) => {
     const embed = new MessageEmbed()
         .setColor('#00ff00')
-        .setTitle('Help Command')
-        .setURL('https://discord.js.org/')
-        .setAuthor('Some name', 'https://i.imgur.com/AfFp7pu.png', 'https://discord.js.org')
-        .setDescription('Some description here')
-        .setThumbnail('https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png?size=4096')
+        .setTitle('Help Sticker Command')
+        .setURL('https://computerdiscuss.github.io/')
+        .setThumbnail('https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png?')
         .addFields(
-            { name: 'Regular field title', value: 'Some value here' },
-            { name: '\u200B', value: '\u200B' },
-            { name: 'Inline field title', value: 'Some value here', inline: true },
-            { name: 'Inline field title', value: 'Some value here', inline: true },
+            { name: '/sticker', value: 'Use Sticker' },
+            { name: '/add_sticker', value: 'Add Sticker to Libary' },
+            { name: '/change_sticker', value: 'Change OWN Sticker to Libary' },
+            { name: '/rename_sticker', value: 'Rename Sticker to Libary' },
+            { name: '/remove_sticker', value: 'Remove Sticker from Libary' },
+            { name: '/list_sticker', value: 'List Sticker from Libary' },
         )
-        .addField('Inline field title', 'Some value here', true)
-        .setImage('https://i.imgur.com/AfFp7pu.png')
         .setTimestamp()
-        .setFooter('Some footer text here', 'https://i.imgur.com/AfFp7pu.png');
+        .setFooter(
+            client.user?.username as string,
+            "https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png"
+        );
 
     await interaction.reply({ embeds: [embed] });
 };
