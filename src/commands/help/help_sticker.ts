@@ -14,11 +14,11 @@ const helpSticker = async (interaction: CommandInteraction, client: Client) => {
         .setThumbnail('https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png?')
         .addFields(
             { name: '/sticker', value: 'Use Sticker' },
-            { name: '/add_sticker', value: 'Add Sticker to Libary' },
-            { name: '/change_sticker', value: 'Change OWN Sticker to Libary' },
-            { name: '/rename_sticker', value: 'Rename Sticker to Libary' },
-            { name: '/remove_sticker', value: 'Remove Sticker from Libary' },
             { name: '/list_sticker', value: 'List Sticker from Libary' },
+            { name: '/add_sticker', value: 'Add Sticker to Libary(Admin-Only)' },
+            { name: '/change_sticker', value: 'Change OWN Sticker to Libary(Admin-Only)' },
+            { name: '/rename_sticker', value: 'Rename Sticker to Libary(Admin-Only)' },
+            { name: '/remove_sticker', value: 'Remove Sticker from Libary(Admin-Only)' },
         )
         .setTimestamp()
         .setFooter(

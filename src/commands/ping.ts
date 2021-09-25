@@ -21,11 +21,12 @@ const ping = async (interaction: CommandInteraction, client: Client) => {
     const embed = new MessageEmbed()
         .setColor('#00ff00')
         .setThumbnail('https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png')
-        .setTitle('Ping')
+        .setTitle('Pong')
         .addFields(
-            { name: 'Bot Latency', value: `${latency}ms` },
-            { name: 'API Latency', value: `${client.ws.ping}ms`},
+            { name: ':robot: Latency', value: `${latency}ms` },
+            { name: ':globe_with_meridians: Latency', value: `${client.ws.ping}ms`},
         )
+        .setTimestamp()
         .setFooter(
             client.user?.username as string,
             "https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png"
