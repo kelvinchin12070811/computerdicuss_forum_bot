@@ -4,12 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  **********************************************************************************************************************/
 // Force registration in the commands to run.
-import './commands/add_sticker';
-import './commands/change_sticker';
-import './commands/list_sticker';
+import './commands/sticker/add_sticker';
+import './commands/sticker/change_sticker';
+import './commands/sticker/list_sticker';
 import './commands/ping';
-import './commands/preview_sticker';
-import './commands/remove_sticker';
-import './commands/rename_sticker';
-import './commands/sticker';
-import './commands/help';
+import './commands/sticker/preview_sticker';
+import './commands/sticker/remove_sticker';
+import './commands/sticker/rename_sticker';
+import './commands/sticker/sticker';
+import './commands/help/help';

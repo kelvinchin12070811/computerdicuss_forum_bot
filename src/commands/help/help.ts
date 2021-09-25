@@ -3,12 +3,11 @@ import {
     Client,
 } from 'discord.js';
 
-import { registerCommand } from './CommandFactory';
+import { registerCommand } from '../CommandFactory';
 
 const { MessageEmbed } = require('discord.js');
 
 const help = async (interaction: CommandInteraction, client: Client) => {
-    await interaction.reply('help commands');
     const embed = {
         "color": 65280,
         "footer": {
