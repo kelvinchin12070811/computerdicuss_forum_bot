@@ -8,8 +8,8 @@ import {
     CommandInteraction,
 } from 'discord.js';
 
-import Sticker from '../db/datatype/sticker';
-import { registerCommand } from './CommandFactory';
+import Sticker from '../../db/datatype/sticker';
+import { registerCommand } from '../CommandFactory';
 
 /**
  * Command that reply the user with sticker with name that match the name supplied by a user.

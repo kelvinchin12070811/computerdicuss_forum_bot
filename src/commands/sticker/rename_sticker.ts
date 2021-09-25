@@ -9,8 +9,8 @@ import {
     Permissions,
 } from 'discord.js';
 
-import Sticker from '../db/datatype/sticker';
-import { registerCommand } from './CommandFactory';
+import Sticker from '../../db/datatype/sticker';
+import { registerCommand } from '../CommandFactory';
 
 /**
  * Allow an admin to rename the sticker. As add_sticker it must be unique.

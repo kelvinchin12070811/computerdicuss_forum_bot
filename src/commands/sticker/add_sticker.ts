@@ -9,8 +9,8 @@ import {
     Permissions,
 } from 'discord.js';
 
-import Sticker from '../db/datatype/sticker';
-import { registerCommand } from './CommandFactory';
+import Sticker from '../../db/datatype/sticker';
+import { registerCommand } from '../CommandFactory';
 
 /**
  * Allow admin to add a new sticker into the sticker library. The sticker is identified with a unique name and will be

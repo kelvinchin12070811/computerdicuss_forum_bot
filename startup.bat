@@ -1,7 +1,6 @@
 title BreadAutomation
 @echo off
-:start
+	yarn build
 	yarn start
 timeout 5
 pause
-goto :start

@@ -8,8 +8,8 @@ import {
     Client,
 } from 'discord.js';
 
-import Sticker from '../db/datatype/sticker';
-import { registerCommand } from './CommandFactory';
+import Sticker from '../../db/datatype/sticker';
+import { registerCommand } from '../CommandFactory';
 
 /**
  * Allow user to preview the sticker before sending it out, the reply will be deleted after a predefined amount of time.

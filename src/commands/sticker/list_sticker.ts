@@ -9,8 +9,8 @@ import {
 } from 'discord.js';
 import { Op } from 'sequelize';
 
-import Sticker from '../db/datatype/sticker';
-import { registerCommand } from './CommandFactory';
+import Sticker from '../../db/datatype/sticker';
+import { registerCommand } from '../CommandFactory';
 
 /**
  * List all sticker stored in the library.
