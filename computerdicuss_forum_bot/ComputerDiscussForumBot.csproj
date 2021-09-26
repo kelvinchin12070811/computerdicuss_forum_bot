@@ -7,6 +7,8 @@
 
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.4.0" />
+    <PackageReference Include="Discord.Net.Commands" Version="2.4.0" />
+    <PackageReference Include="Discord.Net.WebSocket" Version="2.4.0" />
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.10">
@@ -15,5 +17,9 @@
     </PackageReference>
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if not exist &quot;$(ProjectDir)$(OutDir)log4net.config&quot; xcopy /y &quot;$(ProjectDir)log4net.config&quot; &quot;$(ProjectDir)$(OutDir)&quot;&#xD;&#xA;if not exist &quot;$(ProjectDir)$(OutDir)config.yaml&quot; xcopy /y &quot;$(ProjectDir)config.yaml&quot; &quot;$(ProjectDir)$(OutDir)&quot;" />
+  </Target>
 
 </Project>
