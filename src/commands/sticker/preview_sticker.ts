@@ -10,6 +10,8 @@ import {
 
 import Sticker from '../../db/datatype/sticker';
 import { registerCommand } from '../CommandFactory';
+const { MessageEmbed } = require('discord.js');
+
 
 /**
  * Allow user to preview the sticker before sending it out, the reply will be deleted after a predefined amount of time.
@@ -25,7 +27,19 @@ const previewSticker = async (interaction: CommandInteraction, client: Client) =
     });
 
     if (sticker === null) {
-        await interaction.reply(`${stickerName} does not exist in sticker library`);
+        const embed = new MessageEmbed()
+            .setColor('#ff0000')
+            .setTitle('Command Factory')
+            .setThumbnail('https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png?')
+            .addFields(
+                { name: 'Error', value: ` ${stickerName}  does not exist in sticker library` },
+            )
+            .setTimestamp()
+            .setFooter(
+                client.user?.username as string,
+                "https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png"
+            );
+        await interaction.reply({ embeds: [embed] });
         setTimeout(() => interaction.deleteReply(), parseInt(process.env.PREVIEW_TIMEOUT as string));
         return;
     }

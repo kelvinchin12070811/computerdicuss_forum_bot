@@ -11,6 +11,8 @@ import {
 
 import Sticker from '../../db/datatype/sticker';
 import { registerCommand } from '../CommandFactory';
+const { MessageEmbed } = require('discord.js');
+
 
 /**
  * Allow admin to add a new sticker into the sticker library. The sticker is identified with a unique name and will be
@@ -20,7 +22,20 @@ import { registerCommand } from '../CommandFactory';
  */
 const addSticker = async (interaction: CommandInteraction, client: Client) => {
     if (!(interaction.member?.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)) {
-        await interaction.reply('You do not have permission to access this command');
+        const embed = new MessageEmbed()
+            .setColor('#ff0000')
+            .setTitle('Command Factory')
+            .setThumbnail('https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png?')
+            .addFields(
+                { name: 'Error', value: 'You do not have permission to access this command' },
+            )
+            .setTimestamp()
+            .setFooter(
+                client.user?.username as string,
+                "https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png"
+            );
+
+        await interaction.reply({ embeds: [embed] });
         return;
     }
 
@@ -28,12 +43,37 @@ const addSticker = async (interaction: CommandInteraction, client: Client) => {
     const stickerURI = interaction.options.get('uri')?.value as string;
 
     if ((await Sticker.findOne({ where: { keyword: stickerName } })) !== null) {
-        await interaction.reply(`There's already has a sticker call ${stickerName}`);
+        const embed = new MessageEmbed()
+            .setColor('#ffa500')
+            .setTitle('Command Factory')
+            .setThumbnail('https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png?')
+            .addFields(
+                { name: 'There s already has a sticker call', value: `${stickerName}` },
+            )
+            .setTimestamp()
+            .setFooter(
+                client.user?.username as string,
+                "https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png"
+            );
+        await interaction.reply({ embeds: [embed] });
         return;
     }
 
     await Sticker.create({ keyword: stickerName, uri: stickerURI });
-    await interaction.reply(`Sticker ${stickerName} added to library`);
+    const embed = new MessageEmbed()
+        .setColor('#00ff00')
+        .setTitle('Command Factory')
+        .setThumbnail('https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png?')
+        .addFields(
+            { name: 'Add Complete', value: `Sticker ${stickerName} added  to library` },
+        )
+        .setTimestamp()
+        .setFooter(
+            client.user?.username as string,
+            "https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png"
+        );
+
+    await interaction.reply({ embeds: [embed] });
 }
 
 registerCommand('add_sticker', addSticker, {

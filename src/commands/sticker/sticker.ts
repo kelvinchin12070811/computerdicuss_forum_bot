@@ -11,6 +11,8 @@ import {
 import Sticker from '../../db/datatype/sticker';
 import { registerCommand } from '../CommandFactory';
 
+const { MessageEmbed } = require('discord.js');
+
 /**
  * Command that reply the user with sticker with name that match the name supplied by a user.
  * @param interaction Command interaction triggered this command.
@@ -22,7 +24,24 @@ const returnSticker = async (interaction: CommandInteraction, client: Client) =>
 
     const sticker = await Sticker.findOne({ where: { keyword: stickerName } });
 
-    if (sticker == null) message = `Sticker "${stickerName}" does not exist.`;
+
+    if (sticker == null) {
+        const embed = new MessageEmbed()
+            .setColor('#ff0000')
+            .setTitle('Command Factory')
+            .setThumbnail('https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png?')
+            .addFields(
+                { name: 'Error', value: `Sticker "${stickerName}" does not exist` },
+            )
+            .setTimestamp()
+            .setFooter(
+                client.user?.username as string,
+                "https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png"
+            );
+        await interaction.reply({ embeds: [embed] });
+        return;
+    }
+        
     else message = (sticker as any).uri as string;
 
     await interaction.reply(message);

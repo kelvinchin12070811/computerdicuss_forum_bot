@@ -17,22 +17,61 @@ import { registerCommand } from '../CommandFactory';
  * @param interaction Interaction that triggered this command.
  * @param client Client that called this command.
  */
+
+const { MessageEmbed } = require('discord.js');
+
 const removeSticker = async (interaction: CommandInteraction, client: Client) => {
     if (!(interaction.member?.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)) {
-        await interaction.reply('You do not have permission to access this command');
-        return;
+        const embed = new MessageEmbed()
+            .setColor('#ff0000')
+            .setTitle('Command Factory')
+            .setThumbnail('https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png?')
+            .addFields(
+                { name: 'Error', value: 'You do not have permission to access this command' },
+            )
+            .setTimestamp()
+            .setFooter(
+                client.user?.username as string,
+                "https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png"
+            );
+        await interaction.reply({ embeds: [embed] });
     }
 
     const stickerName = (interaction.options.get('sticker_name')?.value as string).toLowerCase();
     const sticker = await Sticker.findOne({ where: { keyword: stickerName } });
 
     if (sticker === null) {
-        await interaction.reply(`Sticker "${stickerName}" does not exist`);
+        const embed = new MessageEmbed()
+            .setColor('#ff0000')
+            .setTitle('Command Factory')
+            .setThumbnail('https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png?')
+            .addFields(
+                { name: 'Error', value: `${stickerName} does not exist` },
+            )
+            .setTimestamp()
+            .setFooter(
+                client.user?.username as string,
+                "https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png"
+            );
+        await interaction.reply({ embeds: [embed] });
         return;
     }
 
     await sticker.destroy();
-    await interaction.reply(`Sticker ${stickerName} has been removed`);
+    const embed = new MessageEmbed()
+        .setColor('#00ff00')
+        .setTitle('Command Factory')
+        .setThumbnail('https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png?')
+        .addFields(
+            { name: 'Complete', value: `Sticker ${stickerName} has been removed` },
+        )
+        .setTimestamp()
+        .setFooter(
+            client.user?.username as string,
+            "https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png"
+        );
+
+    await interaction.reply({ embeds: [embed] });
 }
 
 registerCommand('remove_sticker', removeSticker, {
