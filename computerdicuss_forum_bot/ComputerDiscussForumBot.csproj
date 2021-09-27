@@ -22,10 +22,6 @@
     <PackageReference Include="NetEscapades.Configuration.Yaml" Version="2.1.0" />
   </ItemGroup>
 
-  <!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if not exist &quot;$(ProjectDir)$(OutDir)log4net.config&quot; xcopy /y &quot;$(ProjectDir)log4net.config&quot; &quot;$(ProjectDir)$(OutDir)&quot;&#xD;&#xA;if not exist &quot;$(ProjectDir)$(OutDir)config.yaml&quot; xcopy /y &quot;$(ProjectDir)config.yaml&quot; &quot;$(ProjectDir)$(OutDir)&quot;" />
-  </Target>-->
-
   <ItemGroup>
     <None Update="config.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
