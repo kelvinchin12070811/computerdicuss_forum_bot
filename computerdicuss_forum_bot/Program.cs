@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
+using System.Threading;
 
 namespace ComputerDiscussForumBot
 {
@@ -19,6 +20,14 @@ namespace ComputerDiscussForumBot
 
         public async Task BotMain()
         {
+            var cancelToken = new CancellationTokenSource();
+            Console.CancelKeyPress += delegate {
+                cancelToken.Cancel();
+                Log.Instance.Logger.Info("Logging out from Discord...");
+                Client.Instance.BotClient.LogoutAsync();
+                Log.Instance.Logger.Info("Logged out from discord.");
+            };
+
             try
             {
                 Log.Instance.Logger.Info("Initializing bot...");
@@ -36,17 +45,20 @@ namespace ComputerDiscussForumBot
                 Log.Instance.Logger.Error("Critical error occured.", e);
             }
 
-            bool running = true;
-            while (running)
+            try
             {
-                string command = "";
-                command = Console.ReadLine();
-                if (command == "exit")
-                    running = false;
+                await Task.Delay(-1, cancelToken.Token);
             }
-
-            Log.Instance.Logger.Info("Logging out from Discord...");
-            await Client.Instance.BotClient.LogoutAsync();
+            catch (TaskCanceledException e)
+            {
+                Log.Instance.Logger.Info("Interupt request accepted.", e);
+                return;
+            }
+            catch (Exception e)
+            {
+                Log.Instance.Logger.Fatal("Critical error occured.", e);
+                Environment.Exit(1);
+            }
         }
 
         private async Task OnMessageReceived(SocketMessage msg)
