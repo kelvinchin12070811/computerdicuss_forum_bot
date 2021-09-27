@@ -3,6 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  **********************************************************************************************************************/
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using log4net;
@@ -14,7 +15,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComputerDiscussForumBot.Services
+namespace ComputerDiscuss.DiscordAdminBot.Services
 {
     public class StartupService
     {

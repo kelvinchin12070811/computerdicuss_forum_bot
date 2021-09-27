@@ -8,13 +8,13 @@ using Discord.WebSocket;
 using log4net;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace ComputerDiscussForumBot.Services
+namespace ComputerDiscuss.DiscordAdminBot.Services
 {
+    /// <summary>
+    /// Parse messages and handle Discord's client events. Also invoke interaction that assigned to current bot.
+    /// </summary>
     public class CommandHandler
     {
         public static DiscordSocketClient discord;

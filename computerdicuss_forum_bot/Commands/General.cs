@@ -10,7 +10,7 @@ using log4net;
 using System;
 using System.Threading.Tasks;
 
-namespace ComputerDiscussForumBot.Modules
+namespace ComputerDiscuss.DiscordAdminBot.Modules
 {
     public class General : ModuleBase
     {

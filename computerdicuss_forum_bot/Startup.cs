@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  **********************************************************************************************************************/
-using ComputerDiscussForumBot.Services;
+using ComputerDiscuss.DiscordAdminBot.Services;
 using Discord.Commands;
 using Discord.WebSocket;
 using log4net;
@@ -16,13 +16,28 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ComputerDiscussForumBot
+namespace ComputerDiscuss.DiscordAdminBot
 {
+    /// <summary>
+    /// Main object that start everything up
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Configuration object, object that manage the configuration of the bot.
+        /// Read only.
+        /// </summary>
         public IConfigurationRoot Configuration { get; }
+        /// <summary>
+        /// Logger object that perform logging.
+        /// Read only.
+        /// </summary>
         public ILog Logger { get; }
 
+        /// <summary>
+        /// Constructor that initialize the Startup instance.
+        /// </summary>
+        /// <param name="args">Command line arguments passed to the application while startup.</param>
         public Startup(string[] args)
         {
             var logRepository = LogManager.GetRepository(Assembly.GetExecutingAssembly());
@@ -41,12 +56,20 @@ namespace ComputerDiscussForumBot
             Configuration = builder.Build();
         }
 
+        /// <summary>
+        /// Main entry point called to start the bot.
+        /// </summary>
+        /// <param name="args">Command line arguments passed to the application while startup.</param>
         public static async Task RunAsync(string[] args)
         {
             var startup = new Startup(args);
             await startup.RunAsync();
         }
 
+        /// <summary>
+        /// Initialize required services, event handlers and invoke the bot, also handle shutdown once Ctrl + C is
+        /// pressed.
+        /// </summary>
         public async Task RunAsync()
         {
             var cancelToken = new CancellationTokenSource();
@@ -81,6 +104,11 @@ namespace ComputerDiscussForumBot
             }
         }
 
+        /// <summary>
+        /// Configure and register required services to start the bot, also perform dependencies injection to added
+        /// modules.
+        /// </summary>
+        /// <param name="services">ServiceCollection object to configure.</param>
         private void ConfigureServices(IServiceCollection services)
         {
 

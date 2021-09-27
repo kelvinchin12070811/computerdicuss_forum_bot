@@ -6,7 +6,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace ComputerDiscussForumBot
+namespace ComputerDiscuss.DiscordAdminBot
 {
     class Program
     {
