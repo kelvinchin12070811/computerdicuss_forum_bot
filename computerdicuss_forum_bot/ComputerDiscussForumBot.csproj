@@ -18,8 +18,16 @@
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if not exist &quot;$(ProjectDir)$(OutDir)log4net.config&quot; xcopy /y &quot;$(ProjectDir)log4net.config&quot; &quot;$(ProjectDir)$(OutDir)&quot;&#xD;&#xA;if not exist &quot;$(ProjectDir)$(OutDir)config.yaml&quot; xcopy /y &quot;$(ProjectDir)config.yaml&quot; &quot;$(ProjectDir)$(OutDir)&quot;" />
-  </Target>
+  </Target>-->
 
+  <ItemGroup>
+    <None Update="config.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
