@@ -1,13 +1,15 @@
-﻿/***********************************************************************************************************************
+﻿/**********************************************************************************************************************
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- **********************************************************************************************************************/
+ *********************************************************************************************************************/
+using ComputerDiscuss.DiscordAdminBot.Models;
 using ComputerDiscuss.DiscordAdminBot.Services;
 using Discord.Commands;
 using Discord.WebSocket;
 using log4net;
 using log4net.Config;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -88,10 +90,15 @@ namespace ComputerDiscuss.DiscordAdminBot
             provider.GetRequiredService<CommandHandler>();
 
             var startupService = provider.GetRequiredService<StartupService>();
-            await startupService.StartAsync();
+            var dbContextService = provider.GetRequiredService<BotDBContext>();
 
             try
             {
+                Logger.Info("Migrating database...");
+                dbContextService.Database.Migrate();
+                Logger.Info("Database migrated!");
+
+                await startupService.StartAsync();
                 await Task.Delay(-1, cancelToken.Token);
             }
             catch (TaskCanceledException)
@@ -114,19 +121,19 @@ namespace ComputerDiscuss.DiscordAdminBot
         private void ConfigureServices(IServiceCollection services)
         {
 
-            services
-                .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
-                {
-                    MessageCacheSize = 1000
-                }))
-                .AddSingleton(new CommandService(new CommandServiceConfig
-                {
-                    DefaultRunMode = RunMode.Async
-                }))
-                .AddSingleton<CommandHandler>()
-                .AddSingleton<StartupService>()
-                .AddSingleton(Configuration)
-                .AddSingleton<ILog>(Logger);
+            services.AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
+            {
+                MessageCacheSize = 1000
+            }));
+            services.AddSingleton(new CommandService(new CommandServiceConfig
+             {
+                 DefaultRunMode = RunMode.Async
+             }));
+            services.AddSingleton<CommandHandler>();
+            services.AddSingleton<StartupService>();
+            services.AddSingleton(Configuration);
+            services.AddSingleton<ILog>(Logger);
+            services.AddDbContext<BotDBContext>();
         }
     }
 }
