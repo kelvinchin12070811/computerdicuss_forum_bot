@@ -30,12 +30,23 @@ namespace ComputerDiscuss.DiscordAdminBot.Models
         /// <summary>
         /// Initialize database and perform dependencies injection.
         /// </summary>
+
+        public BotDBContext()
+        {
+            init();
+        }
+
         public BotDBContext(ILog logger)
         {
             this.logger = logger;
+            init();
+        }
 
+        private void init()
+        {
             var path = AppContext.BaseDirectory;
-            logger.Info($"Initializing SQLite3 database at: {path}");
+            if (logger != null)
+                logger.Info($"Initializing SQLite3 database at: {path}");
             DbPath = Path.Join(new string[] { path, "application.db" });
         }
 
@@ -45,7 +56,8 @@ namespace ComputerDiscuss.DiscordAdminBot.Models
         /// <param name="optionsBuilder">Builder that build the options to connect database.</param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            logger.Info("Connecting database...");
+            if (logger != null)
+                logger.Info("Connecting database...");
             optionsBuilder.UseSqlite($"Data Source={DbPath}");
         }
     }
