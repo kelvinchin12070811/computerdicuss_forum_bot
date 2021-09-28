@@ -127,7 +127,8 @@ namespace ComputerDiscuss.DiscordAdminBot
             }));
             services.AddSingleton(new CommandService(new CommandServiceConfig
              {
-                 DefaultRunMode = RunMode.Async
+                 DefaultRunMode = RunMode.Async,
+                 CaseSensitiveCommands = false
              }));
             services.AddSingleton<CommandHandler>();
             services.AddSingleton<StartupService>();

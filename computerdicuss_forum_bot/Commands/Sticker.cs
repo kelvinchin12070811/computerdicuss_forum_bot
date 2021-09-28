@@ -13,6 +13,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
     /// <summary>
     /// Commands that related to sticker.
     /// </summary>
+    [Group("sticker")]
     public class Sticker : ModuleBase
     {
         /// <summary>
@@ -39,7 +40,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// Command that list all stickers in the library.
         /// </summary>
         /// <returns>Asynchronous task that represent as operation that list all stickers in the database.</returns>
-        [Command("list_sticker")]
+        [Command("list")]
         public async Task ListSticker()
         {
             var msg = Context.Message;
@@ -58,9 +59,11 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             await ReplyAsync($"Stickers avaliable:\n{stickerList}", messageReference: refMsg);
         }
 
-        [Command("sticker")]
+        [Command("send")]
         public async Task SendSticker([Remainder]string stickerName)
         {
+            stickerName = stickerName.ToLower();
+
             var msg = Context.Message;
             var refMsg = new MessageReference(msg.Id);
             var target = (from sticker in dbContext.Stickers.AsEnumerable()
