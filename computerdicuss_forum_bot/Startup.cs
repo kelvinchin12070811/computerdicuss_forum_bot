@@ -60,6 +60,7 @@ namespace ComputerDiscuss.DiscordAdminBot
         /// Main entry point called to start the bot.
         /// </summary>
         /// <param name="args">Command line arguments passed to the application while startup.</param>
+        /// <returns>Asynchronous task that represent the operation that kick start the bot.</returns>
         public static async Task RunAsync(string[] args)
         {
             var startup = new Startup(args);
@@ -70,6 +71,7 @@ namespace ComputerDiscuss.DiscordAdminBot
         /// Initialize required services, event handlers and invoke the bot, also handle shutdown once Ctrl + C is
         /// pressed.
         /// </summary>
+        /// <returns>Asynchronous task that represent the operation that kick start the bot.</returns>
         public async Task RunAsync()
         {
             var cancelToken = new CancellationTokenSource();

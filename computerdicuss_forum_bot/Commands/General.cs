@@ -12,15 +12,30 @@ using System.Threading.Tasks;
 
 namespace ComputerDiscuss.DiscordAdminBot.Modules
 {
+    /// <summary>
+    /// General commands, includes all uncategorised commands.
+    /// </summary>
     public class General : ModuleBase
     {
+        /// <summary>
+        /// Logger that used in logging.
+        /// </summary>
         private readonly ILog log;
 
+        /// <summary>
+        /// Constructor that used for dependencies injection.
+        /// </summary>
+        /// <param name="log">Logger instance used for logging.</param>
         public General(ILog log)
         {
             this.log = log;
         }
 
+        /// <summary>
+        /// Ping command, echo back to user and tell them their latency between message sent and received by the bot.
+        /// Also latency between the bot to discord.
+        /// </summary>
+        /// <returns>Asynchronous task that represent the execution of the command.</returns>
         [Command("ping")]
         public async Task Ping()
         {
