@@ -60,8 +60,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Modules
                 .WithFooter(client.CurrentUser.Username,
                     "https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png");
             var embed = buildEmbed.Build();
-            await Context.Channel.SendMessageAsync(embed: embed,
-                messageReference: new MessageReference(msg.Id, Context.Channel.Id, Context.Guild.Id));
+            await ReplyAsync(embed: embed, messageReference: new MessageReference(msg.Id));
         }
     }
 }
