@@ -18,21 +18,11 @@
 - [ ] [公告系统]
 
 --优化系统--
-- [x] [美化指令系统]
+- [ ] [美化指令系统]
 - [ ] [汉化]
 - [ ] [优化系统使用资源]
 
 ## 安装方法
 
 --系统前置程序要求--
-- [ ] [Node.js](https://nodejs.org/zh-cn/) [最低版本：16.9.1] 
-- [ ] [Git](https://gitforwindows.org/)[最低版本：2.33.0]
-
-
-```
-git clone https://github.com/kelvinchin12070811/computerdicuss_forum_bot.git
-npm -g install yarn
-yarn install
-yarn build
-node ./build/index.js
-```
+- [ ] [.Net Core](https://dotnet.microsoft.com/download) [最低版本：5.0] 
