@@ -1,8 +1,8 @@
-/***********************************************************************************************************************
+/**********************************************************************************************************************
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- **********************************************************************************************************************/
+ *********************************************************************************************************************/
 using Discord.Commands;
 
 namespace ComputerDiscuss.DiscordAdminBot.Commands.DTOs.Stickers
@@ -17,10 +17,20 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands.DTOs.Stickers
         /// <summary>
         /// Current keyword of the sticker, represented as the sticker to rename.
         /// </summary>
-        public string Cur { get; set; }
+        public string Cur
+        {
+            get { return _Cur; }
+            set { _Cur = value.ToLower(); }
+        }
+        private string _Cur;
         /// <summary>
         /// New keyword of the sticker, represented as the target name where the sticker should be renamed.
         /// </summary>
-        public string Next { get; set; }
+        public string Next
+        {
+            get { return _Next; }
+            set { _Next = value.ToLower(); }
+        }
+        private string _Next;
     }
 }

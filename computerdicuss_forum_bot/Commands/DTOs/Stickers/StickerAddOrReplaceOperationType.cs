@@ -17,10 +17,20 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands.DTOs.Stickers
         /// <summary>
         /// Keyword of the sticker.
         /// </summary>
-        public string Keyword { get; set; }
+        public string Keyword
+        {
+            get { return _Keyword; }
+            set { _Keyword = value.ToLower(); }
+        }
+        private string _Keyword;
         /// <summary>
         /// Image URI of the sticker.
         /// </summary>
-        public string URI { get; set; }
+        public string URI
+        {
+            get { return _URI; }
+            set { _URI = value.ToLower(); }
+        }
+        private string _URI;
     }
 }
