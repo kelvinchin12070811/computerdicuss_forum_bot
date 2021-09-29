@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ComputerDiscuss.DiscordAdminBot.Commands
@@ -23,6 +24,8 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
     [Group("sticker")]
     public class Sticker : CommandBase
     {
+        private static readonly Regex validURL = new("^http(s)://");
+
         /// <summary>
         /// Logger that use for logging.
         /// </summary>
@@ -157,9 +160,17 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         {
             var refMsg = new MessageReference(Context.Message.Id);
 
-            if ((from sticker in dbContext.Stickers.ToEnumerable()
-                 where sticker.Keyword == args.Keyword
-                 select sticker).FirstOrDefault() != null)
+            if (!validURL.Match(args.URI).Success)
+            {
+                var embed = GetEmbedWithErrorTemplate("Add Sticker")
+                    .AddField("Invalid Or Unsupported URI", "URI provided is not valid or unsupported");
+                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+                return;
+            }
+
+            if ((from dbSticker in dbContext.Stickers.ToEnumerable()
+                 where dbSticker.Keyword == args.Keyword
+                 select dbSticker).FirstOrDefault() != null)
             {
                 var embed = GetEmbedWithErrorTemplate("Add Sticker")
                     .AddField("Sticker Exist", $"\"{args.Keyword}\" already exist in the library.");
@@ -167,9 +178,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                 return;
             }
 
+            var sticker = new Models.Sticker(args.Keyword, args.URI);
+
             try
             {
-                var sticker = new Models.Sticker(args.Keyword, args.URI);
                 await dbContext.Stickers.AddAsync(sticker);
                 await dbContext.SaveChangesAsync();
 
@@ -180,6 +192,9 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             }
             catch (Exception e)
             {
+                dbContext.Stickers.Remove(sticker);
+                await dbContext.SaveChangesAsync();
+
                 logger.Error("Exception occurred!", e);
                 await ReplyWithInternalServerError(refMsg);
             }
@@ -195,6 +210,15 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         public async Task ReplaceSticker(StickerAddOrReplaceOperationType args)
         {
             var refMsg = new MessageReference(Context.Message.Id);
+
+            if (!validURL.Match(args.URI).Success)
+            {
+                var embed = GetEmbedWithErrorTemplate("Replace Sticker")
+                    .AddField("Invalid Or Unsupported URI", "URI provided is unsupported or invalid");
+                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+                return;
+            }
+
             var sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
                            where dbSticker.Keyword == args.Keyword
                            select dbSticker).FirstOrDefault();
@@ -206,6 +230,8 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                 await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
                 return;
             }
+
+            var prevStickerURI = sticker.URI;
 
             try
             {
@@ -219,6 +245,9 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             }
             catch (Exception e)
             {
+                sticker.URI = prevStickerURI;
+                await dbContext.SaveChangesAsync();
+
                 logger.Error("Exception occurred!", e);
                 await ReplyWithInternalServerError(refMsg);
             }
