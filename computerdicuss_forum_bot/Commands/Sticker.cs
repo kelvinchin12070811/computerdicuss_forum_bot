@@ -191,6 +191,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// <param name="args">Args required to executed the command.</param>
         /// <returns>Asynchronous task that host the execution of the command handler.</returns>
         [Command("replace")]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ReplaceSticker(StickerAddOrReplaceOperationType args)
         {
             var refMsg = new MessageReference(Context.Message.Id);
@@ -214,6 +215,48 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                 var embed = GetEmbedWithSuccessTemplate("Replace Sticker")
                     .AddField("Sticker Replaced", $"\"{sticker.Keyword}\" has been updated")
                     .WithThumbnailUrl(sticker.URI);
+                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+            }
+            catch (Exception e)
+            {
+                logger.Error("Exception occurred!", e);
+                await ReplyWithInternalServerError(refMsg);
+            }
+        }
+
+        /// <summary>
+        /// Allow admin to remove a sticker from library.
+        /// </summary>
+        /// <param name="keyword">Keyword of a sticker to remove.</param>
+        /// <returns>Asynchronous task where this command handler running on.</returns>
+        [Command("remove")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task RemoveSticker([Remainder]string keyword)
+        {
+            keyword = keyword.ToLower();
+
+            var sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
+                           where dbSticker.Keyword == keyword
+                           select dbSticker).FirstOrDefault();
+            var refMsg = new MessageReference(Context.Message.Id);
+
+            if (sticker == null)
+            {
+                var embed = GetEmbedWithErrorTemplate("Remove Sticker")
+                    .AddField("Sticker Not Exist", $"Sticker \"{keyword}\" did not exist in library.");
+                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+                return;
+            }
+
+            try
+            {
+                var stickerURI = sticker.URI;
+                var embed = GetEmbedWithSuccessTemplate("Remove Sticker")
+                    .AddField("Sticker Removed!", $"Sticker \"{keyword}\" has been removed.")
+                    .WithThumbnailUrl(stickerURI);
+
+                dbContext.Stickers.Remove(sticker);
+                await dbContext.SaveChangesAsync();
                 await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
             }
             catch (Exception e)
