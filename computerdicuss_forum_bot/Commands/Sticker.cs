@@ -3,6 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  **********************************************************************************************************************/
+using ComputerDiscuss.DiscordAdminBot.Commands.DTOs.Stickers;
 using ComputerDiscuss.DiscordAdminBot.Models;
 using Discord;
 using Discord.Commands;
@@ -100,12 +101,12 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// </param>
         /// <returns></returns>
         [Command("rename")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        [RequireOwner]
         public async Task RenameSticker(StickerRenameOperationType args)
         {
             logger.Info("Command executed: sticker rename");
             var refMsg = new MessageReference(Context.Message.Id);
-
-            if (!IsAuthorAdmin()) return;
             
             if ((from sticker in dbContext.Stickers.ToEnumerable()
                  where sticker.Keyword == args.Next
@@ -139,17 +140,89 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                 return;
             }
 
-            curSticker.Keyword = args.Next;
-            await dbContext.SaveChangesAsync();
-            var embed = GetEmbedWithSuccessTemplate("Rename Sticker",
-                new EmbedFieldBuilder[]
-                {
+            try
+            {
+                curSticker.Keyword = args.Next;
+                await dbContext.SaveChangesAsync();
+                var embed = GetEmbedWithSuccessTemplate("Rename Sticker",
+                    new EmbedFieldBuilder[]
+                    {
                     new EmbedFieldBuilder()
                         .WithName("Sticker Renamed")
                         .WithValue($"\"{args.Cur}\" has been renamed to \"{args.Next}\"")
-                })
-                .WithThumbnailUrl(curSticker.URI);
-            await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+                    })
+                    .WithThumbnailUrl(curSticker.URI);
+                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+            }
+            catch (Exception e)
+            {
+                logger.Info("Exception occurred!", e);
+                var embed = GetEmbedWithErrorTemplate("Rename Sticker",
+                    new EmbedFieldBuilder[]
+                    {
+                        new EmbedFieldBuilder()
+                            .WithName("Server Error")
+                            .WithValue("Server error occurred.")
+                    });
+                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+            }
+        }
+
+        /// <summary>
+        /// Allow admin to add sticker to library.
+        /// </summary>
+        /// <param name="args">Required args to execute this command</param>
+        /// <returns>Asynchronous task that host the event handler of add sticker command.</returns>
+        [Command("add")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        [RequireOwner]
+        public async Task AddSticker(StickerAddOperationType args)
+        {
+            var refMsg = new MessageReference(Context.Message.Id);
+
+            if ((from sticker in dbContext.Stickers.ToEnumerable()
+                 where sticker.Keyword == args.Keyword
+                 select sticker).FirstOrDefault() != null)
+            {
+                var embed = GetEmbedWithErrorTemplate("Add Sticker",
+                    new EmbedFieldBuilder[]
+                    {
+                        new EmbedFieldBuilder()
+                            .WithName("Sticker Exist")
+                            .WithValue($"\"{args.Keyword}\" already exist in the library.")
+                    });
+                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+                return;
+            }
+
+            try
+            {
+                var sticker = new Models.Sticker(args.Keyword, args.URI);
+                await dbContext.Stickers.AddAsync(sticker);
+                await dbContext.SaveChangesAsync();
+
+                var embed = GetEmbedWithSuccessTemplate("Add Sticker",
+                    new EmbedFieldBuilder[]
+                    {
+                        new EmbedFieldBuilder()
+                            .WithName("Sticker")
+                            .WithValue($"\"{args.Keyword}\" has been added to the library.")
+                    })
+                    .WithThumbnailUrl(args.URI);
+                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+            }
+            catch (Exception e)
+            {
+                logger.Error("Exception occurred!", e);
+                var embed = GetEmbedWithErrorTemplate("Add Sticker",
+                    new EmbedFieldBuilder[]
+                    {
+                        new EmbedFieldBuilder()
+                            .WithName("Internal Error")
+                            .WithValue("Server error occurred.")
+                    });
+                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+            }
         }
     }
 }

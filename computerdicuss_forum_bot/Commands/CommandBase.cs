@@ -15,20 +15,6 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
     public abstract class CommandBase : ModuleBase
     {
         /// <summary>
-        /// Check if the author of the context is admin of the guild where the message created at.
-        /// </summary>
-        /// <returns>True if the author is admin, false otherwise.</returns>
-        protected bool IsAuthorAdmin()
-        {
-            if (Context.Message.Author is not SocketGuildUser user) return false;
-
-            if (user.GuildPermissions.Administrator == true)
-                return true;
-
-            return false;
-        }
-
-        /// <summary>
         /// Create EmbedBuilder with "success" template where the border of embed is green.
         /// </summary>
         /// <param name="title">Title of the embed.</param>

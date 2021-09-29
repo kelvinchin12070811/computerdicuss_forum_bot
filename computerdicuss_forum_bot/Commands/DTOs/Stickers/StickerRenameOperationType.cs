@@ -5,19 +5,22 @@
  **********************************************************************************************************************/
 using Discord.Commands;
 
-/// <summary>
-/// Datatype holder that represented as dto that process rename sticker. This object provide current keyword of the
-/// sticker and the new keyword of the sticker where both provided by the user.
-/// </summary>
-[NamedArgumentType]
-public class StickerRenameOperationType
+namespace ComputerDiscuss.DiscordAdminBot.Commands.DTOs.Stickers
 {
     /// <summary>
-    /// Current keyword of the sticker, represented as the sticker to rename.
+    /// Datatype holder that represented as dto that process rename sticker. This object provide current keyword of the
+    /// sticker and the new keyword of the sticker where both provided by the user.
     /// </summary>
-    public string Cur { get; set; }
-    /// <summary>
-    /// New keyword of the sticker, represented as the target name where the sticker should be renamed.
-    /// </summary>
-    public string Next { get; set; }
+    [NamedArgumentType]
+    public class StickerRenameOperationType
+    {
+        /// <summary>
+        /// Current keyword of the sticker, represented as the sticker to rename.
+        /// </summary>
+        public string Cur { get; set; }
+        /// <summary>
+        /// New keyword of the sticker, represented as the target name where the sticker should be renamed.
+        /// </summary>
+        public string Next { get; set; }
+    }
 }
