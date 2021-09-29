@@ -6,6 +6,7 @@
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System.Threading.Tasks;
 
 namespace ComputerDiscuss.DiscordAdminBot.Commands
 {
@@ -18,26 +19,24 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// Create EmbedBuilder with "success" template where the border of embed is green.
         /// </summary>
         /// <param name="title">Title of the embed.</param>
-        /// <param name="fields">Fields of the embed.</param>
         /// <returns>Constructed EmbedBuilder.</returns>
-        protected EmbedBuilder GetEmbedWithSuccessTemplate(string title, EmbedFieldBuilder[] fields)
+        protected EmbedBuilder GetEmbedWithSuccessTemplate(string title)
         {
             return GetDefaultTemplatedEmbedBuilder()
                 .WithColor(0x00, 0xff, 0x00)
-                .WithFields(fields);
+                .WithTitle(title);
         }
 
         /// <summary>
         /// Create EmbedBuilder with "error" template where the border of embed is red.
         /// </summary>
         /// <param name="title">Title of the embed.</param>
-        /// <param name="fields">Fields of the embed.</param>
         /// <returns>Constructed EmbedBuilder.</returns>
-        protected EmbedBuilder GetEmbedWithErrorTemplate(string title, EmbedFieldBuilder[] fields)
+        protected EmbedBuilder GetEmbedWithErrorTemplate(string title)
         {
             return GetDefaultTemplatedEmbedBuilder()
                 .WithColor(0xff, 0x00, 0x00)
-                .WithFields(fields);
+                .WithTitle(title);
         }
 
         /// <summary>
@@ -50,6 +49,24 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             return new EmbedBuilder()
                 .WithCurrentTimestamp()
                 .WithFooter(user.Username, user.GetAvatarUrl());
+        }
+
+        /// <summary>
+        /// Reply with error if server encountered an issues.
+        /// </summary>
+        /// <param name="messageReference">message reference to reply.</param>
+        /// <returns>Asynchronous task that execute the command handler.</returns>
+        protected async Task ReplyWithInternalServerError(MessageReference messageReference = null)
+        {
+            var embed = GetEmbedWithErrorTemplate("Internal Server Error")
+                .WithFields(
+                    new EmbedFieldBuilder[]
+                    {
+                        new EmbedFieldBuilder()
+                            .WithName("HTTP 500")
+                            .WithValue("500 internal server error")
+                    });
+            await ReplyAsync(embed: embed.Build(), messageReference: messageReference);
         }
     }
 }

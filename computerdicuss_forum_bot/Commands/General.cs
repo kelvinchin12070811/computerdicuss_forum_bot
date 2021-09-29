@@ -44,16 +44,17 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                 - msg.Timestamp.ToUnixTimeMilliseconds());
             var client = Context.Client as DiscordSocketClient;
 
-            var embed = GetEmbedWithSuccessTemplate("Pong!",
-                new EmbedFieldBuilder[]
-                {
-                    new EmbedFieldBuilder()
-                        .WithName(":robot: Latency")
-                        .WithValue($"{latency}ms"),
-                    new EmbedFieldBuilder()
-                        .WithName(":globe_with_meridians: Latency")
-                        .WithValue($"{client.Latency}ms")
-                });
+            var embed = GetEmbedWithSuccessTemplate("Pong!")
+                .WithFields(
+                    new EmbedFieldBuilder[]
+                    {
+                        new EmbedFieldBuilder()
+                            .WithName(":robot: Latency")
+                            .WithValue($"{latency}ms"),
+                        new EmbedFieldBuilder()
+                            .WithName(":globe_with_meridians: Latency")
+                            .WithValue($"{client.Latency}ms")
+                    });
             await ReplyAsync(embed: embed.Build(), messageReference: new MessageReference(msg.Id));
         }
     }

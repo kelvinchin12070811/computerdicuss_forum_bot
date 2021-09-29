@@ -9,9 +9,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands.DTOs.Stickers
 {
     /// <summary>
     /// DTO that used to deliver arguments from user input to the bot.
+    /// This DTO used to map sticker keyword and URI that provided by the user to the library.
     /// </summary>
     [NamedArgumentType]
-    public class StickerAddOperationType
+    public class StickerAddOrReplaceOperationType
     {
         /// <summary>
         /// Keyword of the sticker.
