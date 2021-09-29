@@ -6,6 +6,7 @@
 using ComputerDiscuss.DiscordAdminBot.Models;
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
     /// Commands that related to sticker.
     /// </summary>
     [Group("sticker")]
-    public class Sticker : ModuleBase
+    public class Sticker : CommandBase
     {
         /// <summary>
         /// Logger that use for logging.
@@ -35,7 +36,8 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// </summary>
         /// <param name="logger">Logger use for logging</param>
         /// <param name="dbContext">Database context used to access data in database.</param>
-        public Sticker(ILog logger, BotDBContext dbContext)
+        public Sticker(ILog logger, DiscordSocketClient discord, BotDBContext dbContext):
+            base(discord)
         {
             this.logger = logger;
             this.dbContext = dbContext;
@@ -101,9 +103,54 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         [Command("rename")]
         public async Task RenameSticker(StickerRenameOperationType args)
         {
+            logger.Info("Command executed: sticker rename");
             var refMsg = new MessageReference(Context.Message.Id);
-            await ReplyAsync($"Cur: {args.Cur}\n Next: {args.Next}",
-                messageReference: refMsg);
+
+            if (!IsAuthorAdmin()) return;
+            
+            if ((from sticker in dbContext.Stickers.ToEnumerable()
+                 where sticker.Keyword == args.Next
+                 select sticker).FirstOrDefault() != null)
+            {
+                var embedBuilder = GetEmbedWithErrorTemplate("Rename Sticker",
+                    new EmbedFieldBuilder[]
+                    {
+                        new EmbedFieldBuilder()
+                            .WithName("Error")
+                            .WithValue($"There's already a sticker called \"{args.Next}\"")
+                    });
+                await ReplyAsync(embed: embedBuilder.Build(), messageReference: refMsg);
+                return;
+            }
+
+            var curSticker = (from sticker in dbContext.Stickers.ToEnumerable()
+                              where sticker.Keyword == args.Cur
+                              select sticker).FirstOrDefault();
+
+            if (curSticker == null)
+            {
+                var embedBuilder = GetEmbedWithErrorTemplate("Rename Sticker",
+                    new EmbedFieldBuilder[]
+                    {
+                        new EmbedFieldBuilder()
+                            .WithName("Error")
+                            .WithValue($"Sticker \"{args.Cur}\" did not exist in library.")
+                    });
+                await ReplyAsync(embed: embedBuilder.Build(), messageReference: refMsg);
+                return;
+            }
+
+            curSticker.Keyword = args.Next;
+            await dbContext.SaveChangesAsync();
+            var embed = GetEmbedWithSuccessTemplate("Rename Sticker",
+                new EmbedFieldBuilder[]
+                {
+                    new EmbedFieldBuilder()
+                        .WithName("Sticker Renamed")
+                        .WithValue($"\"{args.Cur}\" has been renamed to \"{args.Next}\"")
+                })
+                .WithThumbnailUrl(curSticker.URI);
+            await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
         }
     }
 }
