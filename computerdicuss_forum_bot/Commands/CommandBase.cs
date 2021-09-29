@@ -15,27 +15,6 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
     public abstract class CommandBase : ModuleBase
     {
         /// <summary>
-        /// Discord client where the bot is running on.
-        /// </summary>
-        private readonly DiscordSocketClient discord;
-
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
-        public CommandBase()
-        {
-        }
-
-        /// <summary>
-        /// Constructor that used to perform dependencies injection.
-        /// </summary>
-        /// <param name="discord">Discord client where the bot is running on.</param>
-        public CommandBase(DiscordSocketClient discord)
-        {
-            this.discord = discord;
-        }
-
-        /// <summary>
         /// Check if the author of the context is admin of the guild where the message created at.
         /// </summary>
         /// <returns>True if the author is admin, false otherwise.</returns>
@@ -81,9 +60,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// <returns>Embed builder with default template applied.</returns>
         protected EmbedBuilder GetDefaultTemplatedEmbedBuilder()
         {
+            var user = Context.Client.CurrentUser;
             return new EmbedBuilder()
                 .WithCurrentTimestamp()
-                .WithFooter(discord.CurrentUser.Username, discord.CurrentUser.GetAvatarUrl());
+                .WithFooter(user.Username, user.GetAvatarUrl());
         }
     }
 }

@@ -36,8 +36,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// </summary>
         /// <param name="logger">Logger use for logging</param>
         /// <param name="dbContext">Database context used to access data in database.</param>
-        public Sticker(ILog logger, DiscordSocketClient discord, BotDBContext dbContext):
-            base(discord)
+        public Sticker(ILog logger, BotDBContext dbContext)
         {
             this.logger = logger;
             this.dbContext = dbContext;

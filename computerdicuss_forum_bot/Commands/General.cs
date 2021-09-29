@@ -10,12 +10,12 @@ using log4net;
 using System;
 using System.Threading.Tasks;
 
-namespace ComputerDiscuss.DiscordAdminBot.Modules
+namespace ComputerDiscuss.DiscordAdminBot.Commands
 {
     /// <summary>
     /// General commands, includes all uncategorised commands.
     /// </summary>
-    public class General : ModuleBase
+    public class General : CommandBase
     {
         /// <summary>
         /// Logger that used in logging.
@@ -44,23 +44,17 @@ namespace ComputerDiscuss.DiscordAdminBot.Modules
                 - msg.Timestamp.ToUnixTimeMilliseconds());
             var client = Context.Client as DiscordSocketClient;
 
-            var buildEmbed = new EmbedBuilder()
-                .WithColor(new Color(0x00, 0xff, 0x00))
-                .WithThumbnailUrl(
-                    "https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png"
-                )
-                .WithTitle("Pong")
-                .AddField(new EmbedFieldBuilder()
+            var embed = GetEmbedWithSuccessTemplate("Pong!",
+                new EmbedFieldBuilder[]
+                {
+                    new EmbedFieldBuilder()
                         .WithName(":robot: Latency")
-                        .WithValue($"{latency}ms"))
-                .AddField(new EmbedFieldBuilder()
+                        .WithValue($"{latency}ms"),
+                    new EmbedFieldBuilder()
                         .WithName(":globe_with_meridians: Latency")
-                        .WithValue($"{client.Latency}ms"))
-                .WithCurrentTimestamp()
-                .WithFooter(client.CurrentUser.Username,
-                    "https://cdn.discordapp.com/avatars/890272720120586260/c325408b5c71f09ee12dd1606917abb5.png");
-            var embed = buildEmbed.Build();
-            await ReplyAsync(embed: embed, messageReference: new MessageReference(msg.Id));
+                        .WithValue($"{client.Latency}ms")
+                });
+            await ReplyAsync(embed: embed.Build(), messageReference: new MessageReference(msg.Id));
         }
     }
 }
