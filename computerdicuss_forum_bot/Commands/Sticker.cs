@@ -1,4 +1,9 @@
-﻿using ComputerDiscuss.DiscordAdminBot.Models;
+﻿/***********************************************************************************************************************
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ **********************************************************************************************************************/
+using ComputerDiscuss.DiscordAdminBot.Models;
 using Discord;
 using Discord.Commands;
 using log4net;
@@ -48,7 +53,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             var refMsg = new MessageReference(msg.Id);
             var stickers = (from sticker in dbContext.Stickers.AsEnumerable()
                             select sticker.Keyword).ToList();
-            
+
             if (stickers.Count == 0)
             {
                 await ReplyAsync("No stickers in library,", messageReference: refMsg);
@@ -59,8 +64,14 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             await ReplyAsync($"Stickers avaliable:\n{stickerList}", messageReference: refMsg);
         }
 
+        /// <summary>
+        /// Command that send a sticker selected by the user. Return an error message to user if the sticker with given
+        /// keyword did not found in the library.
+        /// </summary>
+        /// <param name="stickerName">Name or keyword of the sticker to send.</param>
+        /// <returns>Asynchronous task of the SendSticker command's handler</returns>
         [Command("send")]
-        public async Task SendSticker([Remainder]string stickerName)
+        public async Task SendSticker([Remainder] string stickerName)
         {
             stickerName = stickerName.ToLower();
 
@@ -77,6 +88,22 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             }
 
             await ReplyAsync(target.URI, messageReference: refMsg);
+        }
+
+        /// <summary>
+        /// Allow an admin to rename an existing sticker to another keyword. The new keyword must not already exist in
+        /// the library.
+        /// </summary>
+        /// <param name="args">
+        /// Parameters of the command refer <see cref="StickerRenameOperationType" /> for more info.
+        /// </param>
+        /// <returns></returns>
+        [Command("rename")]
+        public async Task RenameSticker(StickerRenameOperationType args)
+        {
+            var refMsg = new MessageReference(Context.Message.Id);
+            await ReplyAsync($"Cur: {args.Cur}\n Next: {args.Next}",
+                messageReference: refMsg);
         }
     }
 }
