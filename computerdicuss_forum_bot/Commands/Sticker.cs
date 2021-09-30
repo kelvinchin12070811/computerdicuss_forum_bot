@@ -98,8 +98,8 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// <summary>
         /// Reply a specific message with sticker, by replying a message while executing command.
         /// </summary>
-        /// <param name="keyword"></param>
-        /// <returns></returns>
+        /// <param name="keyword">Keyword of the sticker to send</param>
+        /// <returns>Asynchronous task that current command handler running on.</returns>
         [Command("reply")]
         public async Task ReplyWithSticker([Remainder] string keyword)
         {
@@ -148,7 +148,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// <param name="args">
         /// Parameters of the command refer <see cref="StickerRenameOperationType" /> for more info.
         /// </param>
-        /// <returns></returns>
+        /// <returns>Asynchronous task that current command handler running on.</returns>
         [Command("rename")]
         [RequireUserPermission(GuildPermission.Administrator)]
         [RequireOwner]
