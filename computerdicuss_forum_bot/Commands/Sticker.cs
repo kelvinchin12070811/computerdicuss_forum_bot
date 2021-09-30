@@ -96,6 +96,52 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         }
 
         /// <summary>
+        /// Reply a specific message with sticker, by replying a message while executing command.
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <returns></returns>
+        [Command("reply")]
+        public async Task ReplyWithSticker([Remainder] string keyword)
+        {
+            keyword = keyword.ToLower();
+            var tgMsg = Context.Message.ReferencedMessage as SocketMessage;
+            var refMsg = new MessageReference(Context.Message.Id);
+
+            if (tgMsg == null)
+            {
+                var embed = GetEmbedWithErrorTemplate("Reply With Sticker")
+                    .AddField("Error",
+                        "No reply message specified, make sure you reply with a message with this command");
+                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+                return;
+            }
+
+            Models.Sticker sticker = null;
+
+            try
+            {
+                sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
+                           where dbSticker.Keyword == keyword
+                           select dbSticker).FirstOrDefault();
+
+                if (sticker == null)
+                {
+                    var embed = GetEmbedWithErrorTemplate("Reply With Sticker")
+                        .AddField("Error", $"Sticker \"{keyword}\" did not exist in library.");
+                    await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+                    return;
+                }
+
+                await ReplyAsync(sticker.URI, messageReference: new MessageReference(tgMsg.Id));
+            }
+            catch (Exception e)
+            {
+                logger.Error("Exception occurred!", e);
+                await ReplyWithInternalServerError(refMsg);
+            }
+        }
+
+        /// <summary>
         /// Allow an admin to rename an existing sticker to another keyword. The new keyword must not already exist in
         /// the library.
         /// </summary>
@@ -109,7 +155,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         public async Task RenameSticker(StickerRenameOperationType args)
         {
             var refMsg = new MessageReference(Context.Message.Id);
-            
+
             if ((from sticker in dbContext.Stickers.ToEnumerable()
                  where sticker.Keyword == args.Next
                  select sticker).FirstOrDefault() != null)
@@ -260,7 +306,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// <returns>Asynchronous task where this command handler running on.</returns>
         [Command("remove")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task RemoveSticker([Remainder]string keyword)
+        public async Task RemoveSticker([Remainder] string keyword)
         {
             keyword = keyword.ToLower();
 
