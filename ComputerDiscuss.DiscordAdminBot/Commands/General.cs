@@ -3,6 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  **********************************************************************************************************************/
+
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -56,6 +57,22 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                             .WithValue($"{client.Latency}ms")
                     });
             await ReplyAsync(embed: embed.Build(), messageReference: new MessageReference(msg.Id));
+        }
+
+        /// <summary>
+        /// Command that used to set the "Playing" status of the bot, only admin can use this command.
+        /// </summary>
+        /// <param name="game">Game to played by the bot.</param>
+        /// <returns>Asynchronous task that execute the command handler.</returns>
+        [Command("game")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task SetGame([Remainder] string game)
+        {
+            var refMsg = new MessageReference(Context.Message.Id);
+            await (Context.Client as DiscordSocketClient).SetGameAsync(game);
+            var embed = GetEmbedWithSuccessTemplate("Set Playing Status")
+                .AddField("Playing Status Changed", $"Now playing {game}");
+            await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
         }
     }
 }
