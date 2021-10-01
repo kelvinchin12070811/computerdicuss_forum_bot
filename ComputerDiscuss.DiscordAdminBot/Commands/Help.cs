@@ -47,6 +47,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             {
                 switch (category)
                 {
+                    case "general":
+                        await GetGeneralHelp(refMsg, botUsername);
+                        break;
+
                     case "sticker":
                         await GetStickersHelp(refMsg, botUsername);
                         break;
@@ -73,19 +77,36 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         {
             var embed = GetEmbedWithSuccessTemplate("Get Help")
                 .AddField($"@{botUsername} help", "Show this message")
+                .AddField($"@{botUsername} general", "Show general commands")
                 .AddField($"@{botUsername} help sticker", "Get help on stickers related commands");
             await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
         }
 
         /// <summary>
-        /// Get help of
+        /// Get help of all general commands.
+        /// </summary>
+        /// <param name="refMsg">Message to reply</param>
+        /// <param name="botUsername">Username of the bot, might be bot's nickname if it has one.</param>
+        /// <returns>Asynchronous task where methods running on.</returns>
+        private async Task GetGeneralHelp(MessageReference refMsg, string botUsername)
+        {
+            var embed = GetEmbedWithSuccessTemplate("Get Help - General")
+                .AddField($"@{botUsername} ping", "Get the ping between the bot and your client, also between the "
+                    + "connection of bot and Discord server")
+                .AddField($"@{botUsername} game {{text}}", "Set the \"Playing\" status of the bot, only admin can "
+                    + "access this command");
+            await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+        }
+
+        /// <summary>
+        /// Get help of all sticker related commands.
         /// </summary>
         /// <param name="refMsg">Message to reply</param>
         /// <param name="botUsername">Username of the bot, might be bot's nickname if it has one.</param>
         /// <returns>Asynchronous task where methods running on.</returns>
         private async Task GetStickersHelp(MessageReference refMsg, string botUsername)
         {
-            var embed = GetEmbedWithSuccessTemplate("Get Help")
+            var embed = GetEmbedWithSuccessTemplate("Get Help - Sticker")
                 .AddField($"@{botUsername} sticker send {{keyword}}",
                     "Send a sticker to the chat where the command is executed, where the {keyword} is the name of "
                         + $"sticker.")
