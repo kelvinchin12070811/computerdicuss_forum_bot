@@ -256,7 +256,6 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// <returns>Asynchronous task that host the event handler of add sticker command.</returns>
         [Command("add")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        [RequireOwner]
         public async Task AddSticker(StickerAddOrReplaceOperationType args)
         {
             var refMsg = new MessageReference(Context.Message.Id);
