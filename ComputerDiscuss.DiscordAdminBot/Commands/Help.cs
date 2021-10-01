@@ -78,8 +78,8 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// <summary>
         /// Get help of 
         /// </summary>
-        /// <param name="refMsg"></param>
-        /// <param name="botUsername"></param>
+        /// <param name="refMsg">Message to reply</param>
+        /// <param name="botUsername">Username of the bot, might be bot's nickname if it has one.</param>
         /// <returns>Asynchronous task where methods running on.</returns>
         private async Task GetStickersHelp(MessageReference refMsg, string botUsername)
         {
