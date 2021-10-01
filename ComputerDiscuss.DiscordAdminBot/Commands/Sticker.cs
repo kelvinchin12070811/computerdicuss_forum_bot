@@ -9,6 +9,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using log4net;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,16 +35,22 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// Database context that used to access data in database.
         /// </summary>
         private readonly BotDBContext dbContext;
+        /// <summary>
+        /// Configuration of the bot.
+        /// </summary>
+        private readonly IConfigurationRoot config;
 
         /// <summary>
         /// Constructor that used to perform dependencies injection.
         /// </summary>
         /// <param name="logger">Logger use for logging</param>
         /// <param name="dbContext">Database context used to access data in database.</param>
-        public Sticker(ILog logger, BotDBContext dbContext)
+        /// <param name="config">Configuration of the bot.</param>
+        public Sticker(ILog logger, BotDBContext dbContext, IConfigurationRoot config)
         {
             this.logger = logger;
             this.dbContext = dbContext;
+            this.config = config;
         }
 
         /// <summary>
@@ -137,6 +144,53 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             catch (Exception e)
             {
                 logger.Error("Exception occurred!", e);
+                await ReplyWithInternalServerError(refMsg);
+            }
+        }
+
+        /// <summary>
+        /// Let a user to preview the selected sticker, the sticker and the caller command will be deleted after
+        /// certain time.
+        /// </summary>
+        /// <param name="keyword">Keyword of sticker to preview.</param>
+        /// <returns>Asynchoronous task that host the executing methods.</returns>
+        [Command("preview")]
+        public async Task PreviewSticker([Remainder] string keyword)
+        {
+            var refMsg = new MessageReference(Context.Message.Id);
+
+            try
+            {
+                var sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
+                               where dbSticker.Keyword == keyword
+                               select dbSticker).FirstOrDefault();
+
+                if (sticker == null)
+                {
+                    var embed = GetEmbedWithErrorTemplate("Preview Sticker")
+                        .AddField("No Sticker Found", $"Sticker \"{keyword}\" did not exist in library.");
+                    await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+                    return;
+                }
+
+                var replied = await ReplyAsync(sticker.URI, messageReference: refMsg);
+
+                try
+                {
+                    await Task.Delay(int.Parse(config["auto dispose duration"]));
+                }
+                catch (Exception e)
+                {
+                    logger.Warn("Auto dispose duration not specifed or parse error!", e);
+                    await Task.Delay(5_000);
+                }
+
+                _ = Context.Channel.DeleteMessageAsync(refMsg.MessageId.Value);
+                _ = Context.Channel.DeleteMessageAsync(replied.Id);
+            }
+            catch (Exception e)
+            {
+                logger.Error("Exception occured!", e);
                 await ReplyWithInternalServerError(refMsg);
             }
         }
