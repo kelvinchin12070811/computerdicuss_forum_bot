@@ -141,6 +141,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                 }
 
                 await ReplyAsync(sticker.URI, messageReference: new MessageReference(tgMsg.Id));
+                await Context.Channel.DeleteMessageAsync(refMsg.MessageId.Value);
             }
             catch (Exception e)
             {
