@@ -3,11 +3,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  **********************************************************************************************************************/
-using System;
-using System.Threading.Tasks;
+
 using Discord;
 using Discord.Commands;
 using log4net;
+using System;
+using System.Threading.Tasks;
 
 namespace ComputerDiscuss.DiscordAdminBot.Commands
 {
@@ -49,6 +50,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                     case "sticker":
                         await GetStickersHelp(refMsg, botUsername);
                         break;
+
                     default:
                         await ListCategories(refMsg, botUsername);
                         break;
@@ -62,7 +64,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         }
 
         /// <summary>
-        /// Get help of all avaliable categories.
+        /// Get help of all available categories.
         /// </summary>
         /// <param name="refMsg">Message to reply.</param>
         /// <param name="botUsername">Username of the bot, might be bot's nickname if it has one.</parma>
@@ -76,7 +78,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         }
 
         /// <summary>
-        /// Get help of 
+        /// Get help of
         /// </summary>
         /// <param name="refMsg">Message to reply</param>
         /// <param name="botUsername">Username of the bot, might be bot's nickname if it has one.</param>
@@ -89,6 +91,8 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                         + $"sticker.")
                 .AddField($"@{botUsername} sticker reply {{keyword}}", "Same as sticker send, but it send sticker by "
                     + "replying to a message where the command replied to.")
+                .AddField($"@{botUsername} sticker preview {{keyword}}", "Also send sticker to channel, but it will "
+                    + "be deleted after certain amount of time.")
                 .AddField($"@{botUsername} sticker add keyword: {{keyword}} uri: {{url}}",
                     "Allow admin to add a sticker to library, where keyword unique id of the sticker and uri is url to "
                         + "the sticker's image or gif. Keyword that contain space must be enclosed with \"\"")

@@ -3,6 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  **********************************************************************************************************************/
+
 using ComputerDiscuss.DiscordAdminBot.Commands.DTOs.Stickers;
 using ComputerDiscuss.DiscordAdminBot.Models;
 using Discord;
@@ -11,9 +12,7 @@ using Discord.WebSocket;
 using log4net;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -31,10 +30,12 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// Logger that use for logging.
         /// </summary>
         private readonly ILog logger;
+
         /// <summary>
         /// Database context that used to access data in database.
         /// </summary>
         private readonly BotDBContext dbContext;
+
         /// <summary>
         /// Configuration of the bot.
         /// </summary>
@@ -73,7 +74,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             }
 
             string stickerList = string.Join(", ", stickers);
-            await ReplyAsync($"Stickers avaliable:\n{stickerList}", messageReference: refMsg);
+            await ReplyAsync($"Stickers available:\n{stickerList}", messageReference: refMsg);
         }
 
         /// <summary>
@@ -153,11 +154,17 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// certain time.
         /// </summary>
         /// <param name="keyword">Keyword of sticker to preview.</param>
-        /// <returns>Asynchoronous task that host the executing methods.</returns>
+        /// <returns>Asynchronous task that host the executing methods.</returns>
         [Command("preview")]
         public async Task PreviewSticker([Remainder] string keyword)
         {
             var refMsg = new MessageReference(Context.Message.Id);
+
+            if (!int.TryParse(config["auto dispose duration"], out int autoDisposeDuration))
+            {
+                logger.Warn("Auto dispose duration parse failed, fallback to default value.");
+                autoDisposeDuration = 5000;
+            }
 
             try
             {
@@ -169,28 +176,21 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                 {
                     var embed = GetEmbedWithErrorTemplate("Preview Sticker")
                         .AddField("No Sticker Found", $"Sticker \"{keyword}\" did not exist in library.");
-                    await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+                    var notFoundMsg = await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+                    await Task.Delay(autoDisposeDuration);
+                    _ = Context.Channel.DeleteMessageAsync(refMsg.MessageId.Value);
+                    _ = Context.Channel.DeleteMessageAsync(notFoundMsg.Id);
                     return;
                 }
 
                 var replied = await ReplyAsync(sticker.URI, messageReference: refMsg);
-
-                try
-                {
-                    await Task.Delay(int.Parse(config["auto dispose duration"]));
-                }
-                catch (Exception e)
-                {
-                    logger.Warn("Auto dispose duration not specifed or parse error!", e);
-                    await Task.Delay(5_000);
-                }
-
+                await Task.Delay(autoDisposeDuration);
                 _ = Context.Channel.DeleteMessageAsync(refMsg.MessageId.Value);
                 _ = Context.Channel.DeleteMessageAsync(replied.Id);
             }
             catch (Exception e)
             {
-                logger.Error("Exception occured!", e);
+                logger.Error("Exception occurred!", e);
                 await ReplyWithInternalServerError(refMsg);
             }
         }
