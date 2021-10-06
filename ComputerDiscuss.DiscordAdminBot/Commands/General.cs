@@ -80,7 +80,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// </summary>
         /// <returns>Asynchronous task that execute the command handler.</returns>
         [Command("issues")]
-        public async Task IssuesTrackerProtal()
+        public async Task IssuesTrackerPortal()
         {
             var refMsg = new MessageReference(Context.Message.Id);
             var iTrackerLink = "https://github.com/kelvinchin12070811/computerdicuss_forum_bot/issues";
