@@ -74,5 +74,17 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                 .AddField("Playing Status Changed", $"Now playing {game}");
             await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
         }
+
+        /// <summary>
+        /// A command that return link to the bot's issues tracker.
+        /// </summary>
+        /// <returns>Asynchronous task that execute the command handler.</returns>
+        [Command("issues")]
+        public async Task IssuesTrackerProtal()
+        {
+            var refMsg = new MessageReference(Context.Message.Id);
+            var iTrackerLink = "https://github.com/kelvinchin12070811/computerdicuss_forum_bot/issues";
+            await ReplyAsync($"Issues Tracker Protal:\n{iTrackerLink}", messageReference: refMsg);
+        }
     }
 }
