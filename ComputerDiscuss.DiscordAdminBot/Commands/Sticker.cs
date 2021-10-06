@@ -206,7 +206,6 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// <returns>Asynchronous task that current command handler running on.</returns>
         [Command("rename")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        [RequireOwner]
         public async Task RenameSticker(StickerRenameOperationType args)
         {
             var refMsg = new MessageReference(Context.Message.Id);
