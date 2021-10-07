@@ -2,14 +2,16 @@
 using ComputerDiscuss.DiscordAdminBot.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ComputerDiscuss.DiscordAdminBot.Migrations
 {
     [DbContext(typeof(BotDBContext))]
-    partial class BotDBContextModelSnapshot : ModelSnapshot
+    [Migration("20211007190010_AddedConverSession")]
+    partial class AddedConverSession
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +50,8 @@ namespace ComputerDiscuss.DiscordAdminBot.Migrations
                 {
                     b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
 
                     b.Property<string>("Keyword")
                         .HasColumnType("TEXT");

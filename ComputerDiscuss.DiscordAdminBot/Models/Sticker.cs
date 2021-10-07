@@ -35,7 +35,6 @@ namespace ComputerDiscuss.DiscordAdminBot.Models
         /// Unique id of the sticker, used to uniquely identify the sticker in library.
         /// </summary>
         [Key]
-        [Column("id")]
         public ulong Id { get; set; }
         /// <summary>
         /// Keyword to trigger the sticker. Should be unique to avoid collision.
