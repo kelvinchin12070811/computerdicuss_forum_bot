@@ -32,6 +32,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Models
         /// </summary>
         public ulong GuildId { get; set; }
         /// <summary>
+        /// Username that created the session.
+        /// </summary>
+        public string Username { get; set; }
+        /// <summary>
         /// Timestamp that represent as when the conversation is started, usually same as the message creation time.
         /// </summary>
         public long CreatedTime { get; set; }
@@ -43,9 +47,5 @@ namespace ComputerDiscuss.DiscordAdminBot.Models
         /// JSON data of the session, keeps all required or related data for the session.
         /// </summary>
         public string Context { get; set; }
-        /// <summary>
-        /// Define if the session has been closed.
-        /// </summary>
-        public bool Closed { get; set; } = false;
     }
 }

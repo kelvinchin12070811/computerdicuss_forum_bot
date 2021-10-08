@@ -268,10 +268,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                 ChannelId = Context.Channel.Id,
                 GuildId = Context.Guild.Id,
                 CreatedTime = Context.Message.CreatedAt.ToUnixTimeSeconds(),
+                Username = starterUsername,
                 Lifetime = 5 * 3600,
                 Context = new JObject(
                     new JProperty("session", new JObject(
-                        new JProperty("conver_starter", starterUsername),
                         new JProperty("action", "sticker_add"),
                         new JProperty("sticker_name", keyword.ToLower())
                     ))

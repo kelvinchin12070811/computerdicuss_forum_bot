@@ -3,11 +3,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  **********************************************************************************************************************/
+using ComputerDiscuss.DiscordAdminBot.Models;
 using Discord.Commands;
 using Discord.WebSocket;
 using log4net;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ComputerDiscuss.DiscordAdminBot.Services
@@ -37,6 +39,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Services
         /// Logger that perform logging.
         /// </summary>
         public static ILog log;
+        /// <summary>
+        /// Database of the bot.
+        /// </summary>
+        private readonly BotDBContext dbContext;
 
         /// <summary>
         /// Constructor that used for dependencies injection.
@@ -46,14 +52,16 @@ namespace ComputerDiscuss.DiscordAdminBot.Services
         /// <param name="config">Configuration for bot.</param>
         /// <param name="provider">ServicesProvider which provide required services or dependencies.</param>
         /// <param name="log">Logger that perform logging.</param>
+        /// <param name="dbContext">Database of the bot.</param>
         public CommandHandler(DiscordSocketClient discord, CommandService commands, IConfigurationRoot config,
-            IServiceProvider provider, ILog log)
+            IServiceProvider provider, ILog log, BotDBContext dbContext)
         {
             CommandHandler.discord = discord;
             CommandHandler.commands = commands;
             CommandHandler.config = config;
             CommandHandler.provider = provider;
             CommandHandler.log = log;
+            this.dbContext = dbContext;
 
             CommandHandler.discord.Ready += OnReady;
             CommandHandler.discord.LoggedOut += OnLoggedOut;
@@ -72,6 +80,21 @@ namespace ComputerDiscuss.DiscordAdminBot.Services
 
             var context = new SocketCommandContext(discord, usrmsg);
             int pos = 0;
+
+            if (usrmsg.Content.Trim() == "%end%")
+            {
+                var username = $"{message.Author.Username}#{message.Author.Discriminator}";
+                log.Debug($"{username} requested for end session");
+                var lastSession = (from session in dbContext.ConverSessions.ToEnumerable()
+                                   where session.Username == username
+                                   select session).FirstOrDefault();
+
+                if (lastSession != null)
+                {
+                    dbContext.ConverSessions.Remove(lastSession);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
 
             if (usrmsg.HasMentionPrefix(discord.CurrentUser, ref pos))
             {
