@@ -18,19 +18,19 @@ namespace ComputerDiscuss.DiscordAdminBot.Models
         /// Unique Identifier of the conversation object.
         /// </summary>
         [Key]
-        public long Id { get; set; }
+        public ulong Id { get; set; }
         /// <summary>
         /// Message that the conversation pointed to. Marked as the message that started this conversation.
         /// </summary>
-        public long MessageId { get; set; }
+        public ulong MessageId { get; set; }
         /// <summary>
         /// Channel where the conversation starting message lived on.
         /// </summary>
-        public long ChannelId { get; set; }
+        public ulong ChannelId { get; set; }
         /// <summary>
         /// Discord server where the conversation starting message lived on.
         /// </summary>
-        public long GuildId { get; set; }
+        public ulong GuildId { get; set; }
         /// <summary>
         /// Timestamp that represent as when the conversation is started, usually same as the message creation time.
         /// </summary>
@@ -38,10 +38,14 @@ namespace ComputerDiscuss.DiscordAdminBot.Models
         /// <summary>
         /// Lifetime in seconds to define the duration of the conversation to keep on.
         /// </summary>
-        public long Lifetime { get; set; }
+        public ulong Lifetime { get; set; }
         /// <summary>
         /// JSON data of the session, keeps all required or related data for the session.
         /// </summary>
         public string Context { get; set; }
+        /// <summary>
+        /// Define if the session has been closed.
+        /// </summary>
+        public bool Closed { get; set; } = false;
     }
 }
