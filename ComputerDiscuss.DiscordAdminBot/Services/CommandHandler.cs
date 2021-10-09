@@ -3,6 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  **********************************************************************************************************************/
+using ComputerDiscuss.DiscordAdminBot.Messaging;
 using ComputerDiscuss.DiscordAdminBot.Models;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -43,6 +44,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Services
         /// Database of the bot.
         /// </summary>
         private readonly BotDBContext dbContext;
+        /// <summary>
+        /// Handler that handler specific pattern of message.
+        /// </summary>
+        private readonly IMessagingHandler messagingHandler;
 
         /// <summary>
         /// Constructor that used for dependencies injection.
@@ -53,8 +58,9 @@ namespace ComputerDiscuss.DiscordAdminBot.Services
         /// <param name="provider">ServicesProvider which provide required services or dependencies.</param>
         /// <param name="log">Logger that perform logging.</param>
         /// <param name="dbContext">Database of the bot.</param>
+        /// <param name="messagingHandler">Handler that handler specific pattern of message.</param>
         public CommandHandler(DiscordSocketClient discord, CommandService commands, IConfigurationRoot config,
-            IServiceProvider provider, ILog log, BotDBContext dbContext)
+            IServiceProvider provider, ILog log, BotDBContext dbContext, IMessagingHandler messagingHandler)
         {
             CommandHandler.discord = discord;
             CommandHandler.commands = commands;
@@ -62,6 +68,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Services
             CommandHandler.provider = provider;
             CommandHandler.log = log;
             this.dbContext = dbContext;
+            this.messagingHandler = messagingHandler;
 
             CommandHandler.discord.Ready += OnReady;
             CommandHandler.discord.LoggedOut += OnLoggedOut;
@@ -81,20 +88,8 @@ namespace ComputerDiscuss.DiscordAdminBot.Services
             var context = new SocketCommandContext(discord, usrmsg);
             int pos = 0;
 
-            if (usrmsg.Content.Trim() == "%end%")
-            {
-                var username = $"{message.Author.Username}#{message.Author.Discriminator}";
-                log.Debug($"{username} requested for end session");
-                var lastSession = (from session in dbContext.ConverSessions.ToEnumerable()
-                                   where session.Username == username
-                                   select session).FirstOrDefault();
-
-                if (lastSession != null)
-                {
-                    dbContext.ConverSessions.Remove(lastSession);
-                    await dbContext.SaveChangesAsync();
-                }
-            }
+            if (await messagingHandler.Exec(usrmsg))
+                return;
 
             if (usrmsg.HasMentionPrefix(discord.CurrentUser, ref pos))
             {
