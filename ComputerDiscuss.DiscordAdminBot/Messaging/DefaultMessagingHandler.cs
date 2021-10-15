@@ -5,7 +5,9 @@
  **********************************************************************************************************************/
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using ComputerDiscuss.DiscordAdminBot.Models;
 using Discord.WebSocket;
 using log4net;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,28 +27,34 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
         /// Logger for logging.
         /// </summary>
         private ILog logger = null;
+        /// <summary>
+        /// Database API for bot.
+        /// </summary>
+        private BotDBContext dbContext = null;
 
         /// <inheritdoc />
         public void ApplyDependencies(IServiceProvider provider)
         {
             client = provider.GetRequiredService<DiscordSocketClient>();
             logger = provider.GetRequiredService<ILog>();
+            dbContext = provider.GetRequiredService<BotDBContext>();
         }
 
         /// <inheritdoc />
         public Task<bool> Exec(SocketMessage message)
         {
             var content = message.Content.Trim();
+            ConverSession session = null;
 
-            switch (content)
+            session = (from converSession in dbContext.ConverSessions.AsEnumerable()
+                       where converSession.MessageId == message.Id
+                       select converSession).FirstOrDefault();
+
+            if (session != null)
             {
-                case "%end%":
-                    logger.Info("End session request received!");
-                    return Task.FromResult(true);
-
-                default:
-                    return Task.FromResult(false);
             }
+
+            return Task.FromResult(false);
         }
     }
 }
