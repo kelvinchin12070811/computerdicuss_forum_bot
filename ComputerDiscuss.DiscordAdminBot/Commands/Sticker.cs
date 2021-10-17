@@ -258,23 +258,22 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task AddSticker([Remainder] string keyword)
         {
-            var refMsg = new MessageReference(Context.Message.Id);
             var converStartMsg = await ReplyAsync("New sticker? Nice! What is the URL of the sticker?\n"
-                + "tips, use %end% to cancel this action.");
-            var starterUsername = $"{Context.Message.Author.Username}#{Context.Message.Author.Discriminator}";
+                + "Reply this message with the URL of the sticker you wish to add.");
+            //var starterUsername = $"{Context.Message.Author.Username}#{Context.Message.Author.Discriminator}";
+            var msgAuthor = Context.Message.Author;
             var converSession = new ConverSession
             {
                 MessageId = converStartMsg.Id,
                 ChannelId = Context.Channel.Id,
                 GuildId = Context.Guild.Id,
                 CreatedTime = Context.Message.CreatedAt.ToUnixTimeSeconds(),
-                Username = starterUsername,
+                Username = msgAuthor.Username,
+                Discriminator = msgAuthor.Discriminator,
                 Lifetime = 5 * 3600,
+                Action = "sticker_add",
                 Context = new JObject(
-                    new JProperty("session", new JObject(
-                        new JProperty("action", "sticker_add"),
-                        new JProperty("sticker_name", keyword.ToLower())
-                    ))
+                    new JProperty("sticker_name", keyword.ToLower())
                 ).ToString()
             };
 

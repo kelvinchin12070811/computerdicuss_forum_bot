@@ -36,6 +36,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Models
         /// </summary>
         public string Username { get; set; }
         /// <summary>
+        /// Per-username unique ID for the user.
+        /// </summary>
+        public string Discriminator { get; set; }
+        /// <summary>
         /// Timestamp that represent as when the conversation is started, usually same as the message creation time.
         /// </summary>
         public long CreatedTime { get; set; }
@@ -43,6 +47,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Models
         /// Lifetime in seconds to define the duration of the conversation to keep on.
         /// </summary>
         public ulong Lifetime { get; set; }
+        /// <summary>
+        /// Registered action to run on the session.
+        /// </summary>
+        public string Action { get; set; }
         /// <summary>
         /// JSON data of the session, keeps all required or related data for the session.
         /// </summary>

@@ -31,6 +31,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
         /// Database API for bot.
         /// </summary>
         private BotDBContext dbContext = null;
+        /// <summary>
+        /// Messaging Executor that handle the distribution of the jobs.
+        /// </summary>
+        private IMessagingExecutor messagingExecutor = new DefaultMessagingExecutor();
 
         /// <inheritdoc />
         public void ApplyDependencies(IServiceProvider provider)
@@ -38,23 +42,30 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
             client = provider.GetRequiredService<DiscordSocketClient>();
             logger = provider.GetRequiredService<ILog>();
             dbContext = provider.GetRequiredService<BotDBContext>();
+
+            messagingExecutor.ApplyDependencies(provider);
         }
 
         /// <inheritdoc />
-        public Task<bool> Exec(SocketMessage message)
+        public async Task<bool> Exec(SocketMessage message)
         {
-            var content = message.Content.Trim();
             ConverSession session = null;
 
-            session = (from converSession in dbContext.ConverSessions.AsEnumerable()
-                       where converSession.MessageId == message.Id
-                       select converSession).FirstOrDefault();
+            ulong msgId = message.Reference == null ? message.Id : message.Reference.MessageId.Value;
 
-            if (session != null)
+            session = (from converSession in dbContext.ConverSessions.AsEnumerable()
+                       where converSession.MessageId == msgId
+                       select converSession).FirstOrDefault();
+            if (session == null) return false;
+
+            if (session.CreatedTime + (long)session.Lifetime <= DateTimeOffset.UtcNow.ToUnixTimeSeconds())
             {
+                dbContext.Remove(session);
+                _ = dbContext.SaveChangesAsync();
+                return false;
             }
 
-            return Task.FromResult(false);
+            return await messagingExecutor.DistributeExecution(message, session);
         }
     }
 }

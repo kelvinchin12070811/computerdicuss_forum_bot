@@ -85,11 +85,13 @@ namespace ComputerDiscuss.DiscordAdminBot.Services
             var usrmsg = message as SocketUserMessage;
             if (usrmsg.Author.IsBot) return;
 
+            if (await messagingHandler.Exec(usrmsg))
+            {
+                return;
+            }
+
             var context = new SocketCommandContext(discord, usrmsg);
             int pos = 0;
-
-            if (await messagingHandler.Exec(usrmsg))
-                return;
 
             if (usrmsg.HasMentionPrefix(discord.CurrentUser, ref pos))
             {
