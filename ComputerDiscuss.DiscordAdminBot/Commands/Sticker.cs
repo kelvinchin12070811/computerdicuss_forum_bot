@@ -258,9 +258,25 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task AddSticker([Remainder] string keyword)
         {
-            var converStartMsg = await ReplyAsync("New sticker? Nice! What is the URL of the sticker?\n"
-                + "Reply this message with the URL of the sticker you wish to add.");
-            //var starterUsername = $"{Context.Message.Author.Username}#{Context.Message.Author.Discriminator}";
+            var msgRef = new MessageReference(Context.Message.Id);
+            var existSticker = (from sticker in dbContext.Stickers.ToEnumerable()
+                                where sticker.Keyword == keyword
+                                select sticker).FirstOrDefault();
+
+            if (existSticker != null)
+            {
+                var embed = GetEmbedWithErrorTemplate("Add Sticker")
+                    .AddField("Sticker Exists", $"Sticker \"{keyword}\" already exist in library.")
+                    .Build();
+                await ReplyAsync(embed: embed, messageReference: msgRef);
+                return;
+            }
+
+            var newStickerEmbed = GetEmbedWithSuccessTemplate("Add Sticker")
+                .AddField("What's the URI of the sticker?", "Reply with this message to complete the action or reply " +
+                    "\"cancel\" to cancel the action.")
+                .Build();
+            var converStartMsg = await ReplyAsync(embed: newStickerEmbed, messageReference: msgRef);
             var msgAuthor = Context.Message.Author;
             var converSession = new ConverSession
             {

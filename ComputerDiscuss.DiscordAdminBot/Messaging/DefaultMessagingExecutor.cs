@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  **********************************************************************************************************************/
 using ComputerDiscuss.DiscordAdminBot.Models;
+using Discord;
 using Discord.WebSocket;
 using log4net;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ComputerDiscuss.DiscordAdminBot.Messaging
@@ -21,6 +23,11 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
     /// </summary>
     class DefaultMessagingExecutor : IMessagingExecutor
     {
+        /// <summary>
+        /// Pattern of cancel keyword where used to cancel the session.
+        /// </summary>
+        private static Regex kwCancel = new Regex("^(?i)cancel$");
+
         /// <summary>
         /// Logger for logging.
         /// </summary>
@@ -60,11 +67,59 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
         }
 
         /// <inheritdoc/>
-        public Task HandleAddSticker(SocketMessage message, ConverSession session)
+        public async Task HandleAddSticker(SocketMessage message, ConverSession session)
         {
             var context = JObject.Parse(session.Context);
-            log.Debug(session.Context);
-            return Task.CompletedTask;
+            var stickerName = (string)context["sticker_name"];
+            var stickerURI = message.Content;
+            var msgRef = new MessageReference(message.Id);
+
+            if (kwCancel.Match(stickerURI.Trim()).Success)
+            {
+                dbContext.ConverSessions.Remove(session);
+                await dbContext.SaveChangesAsync();
+                var embed = new EmbedBuilder()
+                    .WithCurrentTimestamp()
+                    .WithFooter(client.CurrentUser.Username, client.CurrentUser.GetAvatarUrl())
+                    .WithColor(0x00, 0xff, 0x00)
+                    .WithTitle("Action Canceled!")
+                    .Build();
+                await message.Channel.SendMessageAsync(embed: embed, messageReference: msgRef);
+                return;
+            }
+
+            try
+            {
+                var nSticker = new ComputerDiscuss.DiscordAdminBot.Models.Sticker(stickerName, stickerURI);
+                await dbContext.Stickers.AddAsync(nSticker);
+                await dbContext.SaveChangesAsync();
+
+                var embed = new EmbedBuilder()
+                    .WithCurrentTimestamp()
+                    .WithFooter(client.CurrentUser.Username, client.CurrentUser.GetAvatarUrl())
+                    .WithColor(0x00, 0xff, 0x00)
+                    .WithTitle("Add Sticker")
+                    .AddField("Sticker Added", $"Sticker \"{stickerName}\" has been added to library!")
+                    .WithThumbnailUrl(stickerURI)
+                    .Build();
+
+                await message.Channel.SendMessageAsync(embed: embed, messageReference: msgRef);
+
+                dbContext.ConverSessions.Remove(session);
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                log.Error("Exception occurred: ", e);
+                var embed = new EmbedBuilder()
+                    .WithCurrentTimestamp()
+                    .WithFooter(client.CurrentUser.Username, client.CurrentUser.GetAvatarUrl())
+                    .WithColor(0xff, 0x00, 0x00)
+                    .WithTitle("Error Ocurred!")
+                    .AddField("An error has ocurred!", e.Message)
+                    .Build();
+                await message.Channel.SendMessageAsync(embed: embed);
+            }
         }
     }
 }

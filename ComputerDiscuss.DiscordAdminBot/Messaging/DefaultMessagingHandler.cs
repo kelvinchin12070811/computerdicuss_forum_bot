@@ -55,13 +55,12 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
 
             session = (from converSession in dbContext.ConverSessions.AsEnumerable()
                        where converSession.MessageId == msgId
+                       orderby converSession.Id descending
                        select converSession).FirstOrDefault();
-            if (session == null) return false;
 
-            if (session.CreatedTime + (long)session.Lifetime <= DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+            if (session == null ||
+                session.CreatedTime + (long)session.Lifetime <= DateTimeOffset.UtcNow.ToUnixTimeSeconds())
             {
-                dbContext.Remove(session);
-                _ = dbContext.SaveChangesAsync();
                 return false;
             }
 
