@@ -207,45 +207,52 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// <returns>Asynchronous task that current command handler running on.</returns>
         [Command("rename")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task RenameSticker(StickerRenameOperationType args)
+        public async Task RenameSticker([Remainder]String keyword)
         {
             var refMsg = new MessageReference(Context.Message.Id);
+            var tgSticker = (from sticker in dbContext.Stickers.ToEnumerable()
+                             where sticker.Keyword == keyword
+                             select sticker).FirstOrDefault();
 
-            if ((from sticker in dbContext.Stickers.ToEnumerable()
-                 where sticker.Keyword == args.Next
-                 select sticker).FirstOrDefault() != null)
+            if (tgSticker == null)
             {
-                var embedBuilder = GetEmbedWithErrorTemplate("Rename Sticker")
-                    .AddField("Error", $"There's already a sticker called \"{args.Next}\"");
-                await ReplyAsync(embed: embedBuilder.Build(), messageReference: refMsg);
+                var errMsg = GetEmbedWithErrorTemplate("Rename sticker")
+                    .AddField("Sticker not exist", $"Can't find sticker {keyword} in the library.")
+                    .Build();
+                await ReplyAsync(embed: errMsg, messageReference: refMsg);
                 return;
             }
 
-            var curSticker = (from sticker in dbContext.Stickers.ToEnumerable()
-                              where sticker.Keyword == args.Cur
-                              select sticker).FirstOrDefault();
-
-            if (curSticker == null)
+            var successMsg = GetEmbedWithSuccessTemplate("Rename sticker")
+                .AddField("What's is the new keyword of the sticker?", "Reply this message to complete the action or "
+                    + "reply \"cancel\" to cancel the action.")
+                .WithThumbnailUrl(tgSticker.URI)
+                .Build();
+            var converStartMsg = await ReplyAsync(embed: successMsg, messageReference: refMsg);
+            var msgAuthor = Context.Message.Author;
+            var converSession = new ConverSession
             {
-                var embedBuilder = GetEmbedWithErrorTemplate("Rename Sticker")
-                    .AddField("Error", $"Sticker \"{args.Cur}\" did not exist in library.");
-                await ReplyAsync(embed: embedBuilder.Build(), messageReference: refMsg);
-                return;
-            }
+                MessageId = converStartMsg.Id,
+                ChannelId = Context.Channel.Id,
+                GuildId = Context.Guild.Id,
+                CreatedTime = Context.Message.CreatedAt.ToUnixTimeSeconds(),
+                Username = msgAuthor.Username,
+                Discriminator = msgAuthor.Discriminator,
+                Lifetime = 5 * 3600,
+                Action = "sticker_rename",
+                Context = new JObject(
+                    new JProperty("sticker_name", keyword.ToLower())
+                ).ToString()
+            };
 
             try
             {
-                curSticker.Keyword = args.Next;
+                await dbContext.ConverSessions.AddAsync(converSession);
                 await dbContext.SaveChangesAsync();
-                var embed = GetEmbedWithSuccessTemplate("Rename Sticker")
-                    .AddField("Sticker Renamed", $"\"{args.Cur}\" has been renamed to \"{args.Next}\"")
-                    .WithThumbnailUrl(curSticker.URI);
-                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                logger.Info("Exception occurred!", e);
-                await ReplyWithInternalServerError(refMsg);
+                logger.Error("Exception occured!", ex);
             }
         }
 
