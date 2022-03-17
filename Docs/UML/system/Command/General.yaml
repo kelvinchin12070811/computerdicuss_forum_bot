@@ -1,0 +1,28 @@
+General:
+  type: class
+  inherit: ./CommandBase
+  private_property:
+    log:
+      type: Log4net.ILog
+      modifier:
+         - const
+  
+  public_property:
+    constructor:
+      args:
+        log:
+          type: Log4net.ILog
+    
+    Ping:
+      type: function
+      return: System.Threading.Tasks.Task
+
+    SetGame:
+      type: function
+      args:
+        game: string
+      return: System.Threading.Tasks.Task
+    
+    IssueTrackerPortal:
+      type: function
+      return: System.Threading.Tasks.Task

@@ -1,0 +1,22 @@
+CommandBase:
+  type: abstract
+  protected_property:
+    GetEmbedWithSuccessTemplate:
+      type: function
+      args:
+        title: string
+      return: Discord.EmbedBuilder
+
+    GetEmbedWithErrorTemplate:
+      type: function
+      args:
+        title: string
+      return: Discord.EmbedBuilder
+
+    GetDefaultTemplatedEmbedBuilder:
+      type: function
+      return: Discord.EmbedBuilder
+
+    ReplyWithInternalServerError:
+      type: function
+      return: System.Threading.Tasks.Task
