@@ -1,4 +1,4 @@
-modal:
+Sticker:
   Id:
     type: uint64_t
     key: primary
