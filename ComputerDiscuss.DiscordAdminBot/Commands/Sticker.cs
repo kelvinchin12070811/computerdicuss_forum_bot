@@ -66,6 +66,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             var client = Context.Client;
             var refMsg = new MessageReference(msg.Id);
             var stickers = (from sticker in dbContext.Stickers.AsEnumerable()
+                            orderby sticker.Keyword ascending
                             select sticker.Keyword).ToList();
 
             if (stickers.Count == 0)
