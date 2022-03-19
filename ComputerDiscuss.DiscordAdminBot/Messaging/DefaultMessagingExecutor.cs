@@ -147,6 +147,11 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
             try
             {
                 await dbContext.SaveChangesAsync();
+                var successMsg = GetDefaultSuccessEmbedBuilder("Rename Sticker", client.CurrentUser)
+                    .AddField("Sticker Renamed!", $"Sticker \"{(string)sessionContext["sticker_name"]}\" has been "
+                        + $"renamed to \"{nwStickerName}\".")
+                    .Build();
+                await message.Channel.SendMessageAsync(embed: successMsg, messageReference: msgRef);
             }
             catch (Exception ex)
             {
