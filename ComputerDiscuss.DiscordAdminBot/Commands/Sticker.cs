@@ -315,54 +315,13 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// <summary>
         /// Allow admin to replace a sticker with another URI while keep the keyword as same.
         /// </summary>
-        /// <param name="args">Args required to executed the command.</param>
+        /// <param name="keyword">Keyword of the sticker to remove.</param>
         /// <returns>Asynchronous task that host the execution of the command handler.</returns>
         [Command("replace")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task ReplaceSticker(StickerAddOrReplaceOperationType args)
+        public async Task ReplaceSticker([Remainder] string keyword)
         {
-            var refMsg = new MessageReference(Context.Message.Id);
-
-            if (!validURL.Match(args.URI).Success)
-            {
-                var embed = GetEmbedWithErrorTemplate("Replace Sticker")
-                    .AddField("Invalid Or Unsupported URI", "URI provided is unsupported or invalid");
-                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
-                return;
-            }
-
-            var sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
-                           where dbSticker.Keyword == args.Keyword
-                           select dbSticker).FirstOrDefault();
-
-            if (sticker == null)
-            {
-                var embed = GetEmbedWithErrorTemplate("Replace Sticker")
-                    .AddField("Error", $"Sticker \"{args.Keyword}\" does not exits in library.");
-                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
-                return;
-            }
-
-            var prevStickerURI = sticker.URI;
-
-            try
-            {
-                sticker.URI = args.URI;
-                await dbContext.SaveChangesAsync();
-
-                var embed = GetEmbedWithSuccessTemplate("Replace Sticker")
-                    .AddField("Sticker Replaced", $"\"{sticker.Keyword}\" has been updated")
-                    .WithThumbnailUrl(sticker.URI);
-                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
-            }
-            catch (Exception e)
-            {
-                sticker.URI = prevStickerURI;
-                await dbContext.SaveChangesAsync();
-
-                logger.Error("Exception occurred!", e);
-                await ReplyWithInternalServerError(refMsg);
-            }
+            var msgReference = new MessageReference(Context.Message.Id);
         }
 
         /// <summary>
