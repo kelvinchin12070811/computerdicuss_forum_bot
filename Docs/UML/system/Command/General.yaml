@@ -1,13 +1,13 @@
 General:
   type: class
   inherit: ./CommandBase
-  private_property:
+  private property:
     log:
       type: Log4net.ILog
       modifier:
          - const
   
-  public_property:
+  public property:
     constructor:
       args:
         log:

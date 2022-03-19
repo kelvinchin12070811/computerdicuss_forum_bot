@@ -1,6 +1,6 @@
 CommandBase:
   type: abstract
-  protected_property:
+  protected property:
     GetEmbedWithSuccessTemplate:
       type: function
       args:
