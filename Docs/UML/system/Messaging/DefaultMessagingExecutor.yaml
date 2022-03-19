@@ -1,0 +1,13 @@
+DefaultMessagingExecutor:
+  type: class
+  inherit: ./IMessagingExecutor
+  private attribute:
+    kwCancel:
+      type: System.Text.RegularExpressions.Regex
+      modifier:
+         - static
+         - const
+
+    log: Log4Net.ILog
+    client: Discord.WebSocket.DiscordSocketClient
+    dbContext: /Models/BotDBContext

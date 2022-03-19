@@ -9,7 +9,7 @@ General:
   
   public property:
     constructor:
-      args:
+      arg:
         log:
           type: Log4net.ILog
     
@@ -19,7 +19,7 @@ General:
 
     SetGame:
       type: function
-      args:
+      arg:
         game: string
       return: System.Threading.Tasks.Task
     

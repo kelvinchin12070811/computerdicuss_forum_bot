@@ -1,0 +1,62 @@
+ConverSession:
+  type: class
+  public property:
+    Id:
+      type: uint64
+      accessor:
+         - get
+         - set
+    
+    MessageId:
+      type: uint64
+      accessor:
+         - get
+         - set
+    
+    ChannelId:
+      type: uint64
+      accessor:
+         - get
+         - set
+
+    GuildId:
+      type: uint64
+      accessor:
+         - get
+         - set
+
+    Username:
+      type: string
+      accessor:
+         - get
+         - set
+
+    Discriminator:
+      type: string
+      accessor:
+         - get
+         - set
+
+    CreatedTime:
+      type: uint64
+      accessor:
+         - get
+         - set
+
+    Lifetime:
+      type: uint64
+      accessor:
+         - get
+         - set
+
+    Action:
+      type: string
+      accessor:
+         - get
+         - set
+
+    Context:
+      type: string
+      accessor:
+         - get
+         - set

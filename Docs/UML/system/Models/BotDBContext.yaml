@@ -1,0 +1,37 @@
+BotDBContext:
+  type: class
+  inherit: Microsoft.EntityFrameworkCore.DbContext
+  private property:
+    Stickers:
+      type: Microsoft.EntityFrameworkCore.DbSet<./Sticker>
+      accessor:
+         - get
+         - set
+
+    ConverSessions:
+      type: Microsoft.EntityFrameworkCore.DbSet<./ConverSession>
+      accessor:
+         - get
+         - private set
+
+    logger:
+      type: log4net.ILog
+      modifier:
+         - const
+
+  public property:
+    constructor: ~
+
+    constructor:
+      arg:
+        logger: log4net.ILog
+
+    init:
+      type: function
+      return: void
+
+    OnConfiguring:
+      type: function
+      return: void
+      arg:
+        optionsBuilder: Microsoft.EntityFrameworkCore.DbContextOptionsBuilder

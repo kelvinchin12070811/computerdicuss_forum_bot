@@ -1,0 +1,19 @@
+Sticker:
+  type: class
+  inherit: ./CommandBase
+  private property:
+    validURL:
+      type: System.Text.RegularExpressions.Regex
+      modifier:
+       - const
+       - static
+
+    logger:
+      type: log4net.ILog
+      modifier:
+       - const
+
+    dbContext:
+      type: /Models/BotDBContext
+      modifier:
+       - const

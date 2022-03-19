@@ -1,15 +1,15 @@
 CommandBase:
-  type: abstract
+  type: abstract class
   protected property:
     GetEmbedWithSuccessTemplate:
       type: function
-      args:
+      arg:
         title: string
       return: Discord.EmbedBuilder
 
     GetEmbedWithErrorTemplate:
       type: function
-      args:
+      arg:
         title: string
       return: Discord.EmbedBuilder
 
