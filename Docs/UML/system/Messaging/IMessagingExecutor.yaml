@@ -34,6 +34,13 @@ IMessagingExecutor:
         message: Discord.WebSocket.SocketMessage
         session: /Models/ConverSession
 
+    HandleReplaceSticker:
+      type: function
+      return: System.Threading.Tasks.Task
+      arg:
+        message: Discord.WebSocket.SocketMessage
+        session: /Models/ConverSession
+
     GetDefaultEmbedBuilder:
       type: function
       return: Discord.EmbedBuilder

@@ -2,12 +2,6 @@ Sticker:
   type: class
   inherit: ./CommandBase
   private property:
-    validURL:
-      type: System.Text.RegularExpressions.Regex
-      modifier:
-       - const
-       - static
-
     logger:
       type: log4net.ILog
       modifier:
@@ -17,3 +11,61 @@ Sticker:
       type: /Models/BotDBContext
       modifier:
        - const
+
+    config:
+       type: Microsoft.Extensions.Configuration.IConfiguration
+       modifier:
+        - const
+
+  public property:
+    constructor:
+      arg:
+        logger: log4net.ILog
+        dbContext: /Models/BotDBContext
+        config: Microsoft.Extensions.Configuration.IConfiguration
+
+    ListSticker:
+      type: function
+      return: System.Threading.Tasks.Task
+    
+    SendSticker:
+      type: function
+      return: System.Threading.Tasks.Task
+      arg:
+        stickerName: string
+
+    ReplyWithSticker:
+      type: function
+      return: System.Threading.Tasks.Task
+      arg:
+        keyword: string
+    
+    PreviewSticker:
+      type: function
+      return: System.Threading.Tasks.Task
+      arg:
+        stickerName: string
+
+    RenameSticker:
+      type: function
+      return: System.Threading.Tasks.Task
+      arg:
+        keyword: string
+
+    AddSticker:
+      type: function
+      return: System.Threading.Tasks.Task
+      arg:
+        keyword: string
+
+    ReplaceSticker:
+      type: function
+      return: System.Threading.Tasks.Task
+      arg:
+        keyword: string
+
+    RemoveSticker:
+      type: function
+      return: System.Threading.Tasks.Task
+      arg:
+        keyword: string
