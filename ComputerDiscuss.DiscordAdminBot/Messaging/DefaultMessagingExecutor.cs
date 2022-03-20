@@ -62,6 +62,9 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
                 case "sticker_rename":
                     _ = HandleRenameSticker(message, session);
                     break;
+                case "sticker_replace":
+                    _ = HandleReplaceSticker(message, session);
+                    break;
                 default:
                     return Task.FromResult(false);
             }
@@ -163,6 +166,22 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
             }
 
             await CloseSession(session);
+        }
+
+        /// <inheritdoc/>
+        public async Task HandleReplaceSticker(SocketMessage message, ConverSession session)
+        {
+            var messageReference = new MessageReference(message.Id);
+
+            if (kwCancel.IsMatch(message.Content.Trim()))
+            {
+                await CloseSession(session);
+                var clossedMsg = GetDefaultSuccessEmbedBuilder("Replace Sticker", client.CurrentUser)
+                    .AddField("Action Canceled", "Action of replace sticker has been cancled.")
+                    .Build();
+                await message.Channel.SendMessageAsync(embed: clossedMsg, messageReference: messageReference);
+                return;
+            }
         }
 
         /// <inheritdoc/>

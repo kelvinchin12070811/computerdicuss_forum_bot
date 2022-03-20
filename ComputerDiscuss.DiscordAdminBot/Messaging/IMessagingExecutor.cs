@@ -51,6 +51,13 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
         /// <returns>Asynchornous task that perform the rename sticker task.</returns>
         public Task HandleRenameSticker(SocketMessage message, ConverSession session);
         /// <summary>
+        /// Method that handle logic for replace sticker.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public Task HandleReplaceSticker(SocketMessage message, ConverSession session);
+        /// <summary>
         /// Get the default template of EmbedBuilder.
         /// </summary>
         /// <param name="title">Title of the embed.</param>
