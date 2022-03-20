@@ -321,7 +321,26 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ReplaceSticker([Remainder] string keyword)
         {
-            var msgReference = new MessageReference(Context.Message.Id);
+            try
+            {
+                var msgReference = new MessageReference(Context.Message.Id);
+                var target = (from sticker in dbContext.Stickers.ToEnumerable()
+                              where sticker.Keyword == keyword
+                              select sticker).FirstOrDefault();
+
+                if (target == null)
+                {
+                    var errMsg = GetEmbedWithErrorTemplate("Replace Sticker")
+                        .AddField("Sticker not exist", $"Couldn't found sticker \"{keyword}\"")
+                        .Build();
+                    await ReplyAsync(embed: errMsg, messageReference: msgReference);
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e);
+            }
         }
 
         /// <summary>
