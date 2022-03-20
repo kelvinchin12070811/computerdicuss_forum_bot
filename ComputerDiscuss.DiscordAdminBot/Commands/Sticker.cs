@@ -325,7 +325,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             {
                 var msgReference = new MessageReference(Context.Message.Id);
                 var target = (from sticker in dbContext.Stickers.ToEnumerable()
-                              where sticker.Keyword == keyword
+                              where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).Match(sticker.Keyword).Success
                               select sticker).FirstOrDefault();
 
                 if (target == null)
@@ -336,10 +336,41 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                     await ReplyAsync(embed: errMsg, messageReference: msgReference);
                     return;
                 }
+
+                var requestNewStickerURIMsg = GetEmbedWithSuccessTemplate("Replace Sticker")
+                    .AddField("What's the URI of the sticker?", "Reply with this message to complete the action or reply " +
+                        "\"cancel\" to cancel the action.")
+                    .Build();
+                var converStartMsg = await ReplyAsync(embed: requestNewStickerURIMsg, messageReference: msgReference);
+
+                var context = new ConverSession
+                {
+                    MessageId = converStartMsg.Id,
+                    ChannelId = Context.Channel.Id,
+                    GuildId = Context.Guild.Id,
+                    CreatedTime = Context.Message.CreatedAt.ToUnixTimeSeconds(),
+                    Username = Context.User.Username,
+                    Discriminator = Context.User.Discriminator,
+                    Lifetime = 5 * 3600,
+                    Action = "sticker_replace",
+                    Context = new JObject(
+                        new JProperty("sticker_name", keyword.ToLower())
+                    ).ToString()
+                };
+
+                try
+                {
+                    await dbContext.AddAsync(context);
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Exception occured!", ex);
+                }
             }
             catch (Exception e)
             {
-                logger.Error(e);
+                logger.Error("Exception occured!", e);
             }
         }
 
