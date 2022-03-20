@@ -1,0 +1,42 @@
+StartupService:
+  public attribute:
+    provider:
+      type: System.IServiceProvider
+      modifier:
+        - static
+    
+    discord:
+      type: Discord.DiscordSocketClient
+      modifier:
+        - const
+
+    commands:
+      type: Discord.Commands.CommandService
+      modifier:
+        - const
+
+    config:
+      type: Microsoft.Extensions.Configuration.IConfigurationRoot
+      modifier:
+        - const
+
+    log:
+      type: log4net.ILog
+      modifier:
+        - const
+
+    constructor:
+      arg:
+        provider: System.IServiceProvider
+        discord: Discord.DiscordSocketClient
+        commands: Discord.Commands.CommandService
+        config: Microsoft.Extensions.Configuration.IConfigurationRoot
+        log: log4net.ILog
+
+    StartAsync:
+      type: function
+      return: System.Threading.Tasks.Task
+
+    StopAsync:
+      type: function
+      return: System.Threading.Tasks.Task
