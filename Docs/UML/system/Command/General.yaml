@@ -26,3 +26,7 @@ General:
     IssueTrackerPortal:
       type: function
       return: System.Threading.Tasks.Task
+
+    GetBotInfo:
+      type: function
+      return: System.Threading.Tasks.Task

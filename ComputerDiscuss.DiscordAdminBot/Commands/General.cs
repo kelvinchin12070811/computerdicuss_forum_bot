@@ -86,5 +86,14 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             var iTrackerLink = "https://github.com/kelvinchin12070811/computerdicuss_forum_bot/issues";
             await ReplyAsync($"Issues Tracker Protal:\n{iTrackerLink}", messageReference: refMsg);
         }
+
+        [Command("who are you")]
+        public async Task GetBotInfo()
+        {
+            await ReplyAsync($"{Context.Client.CurrentUser.Username} is a bot that created by a team of members of " +
+                "an asian ICT discussion forum and is open sourced under MPL 2.0, visit the github repository with " +
+                "the link bellow for more information:\nhttps://github.com/kelvinchin12070811/" +
+                "computerdicuss_forum_bot\n\n~~but ussually only one developer is working on it, LOL~~");
+        }
     }
 }
