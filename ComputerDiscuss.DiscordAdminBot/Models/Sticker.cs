@@ -3,6 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *********************************************************************************************************************/
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,6 +12,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Models
     /// <summary>
     /// Sticker entry, represent as a sticker stored in library.
     /// </summary>
+    [Index(nameof(Keyword))]
     public class Sticker
     {
         /// <summary>
