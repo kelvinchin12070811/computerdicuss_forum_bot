@@ -27,6 +27,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
         /// Pattern of cancel keyword where used to cancel the session.
         /// </summary>
         private static Regex kwCancel = new Regex("^(?i)cancel$");
+        /// <summary>
+        /// Pattern of valid url syntax.
+        /// </summary>
+        private static Regex kwURL = new Regex(@"^(?:https?://)?(?:[\w]+\.)(?:\.?[\w]{2,})+");
 
         /// <summary>
         /// Logger for logging.
@@ -182,6 +186,44 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
                 await message.Channel.SendMessageAsync(embed: clossedMsg, messageReference: messageReference);
                 return;
             }
+
+            var context = JObject.Parse(session.Context);
+            var stickerName = (string)context["sticker_name"];
+            var targetSticker = (from sticker in dbContext.Stickers.ToEnumerable()
+                                 where new Regex(stickerName, RegexOptions.IgnoreCase).IsMatch(sticker.Keyword)
+                                 select sticker).FirstOrDefault();
+
+            if (targetSticker == null)
+            {
+                var errorMsg = GetDefaultErrorEmbedBuilder("Replace Sticker", client.CurrentUser)
+                    .AddField("Replace Sticker", "Sticker selected no longer exist in the sticker library.")
+                    .Build();
+                await message.Channel.SendMessageAsync(embed: errorMsg, messageReference: messageReference);
+                await CloseSession(session);
+            }
+
+            var newURI = message.Content.Trim();
+            
+            if (!kwURL.IsMatch(newURI))
+            {
+                var invalidUrlMsg = GetDefaultErrorEmbedBuilder("Replace Sticker", client.CurrentUser)
+                    .AddField("Replace Sticker",
+                        "Invalid syntax of provided URL. Please retry with a valid one or reply \"cancel\" to " +
+                        "cancel the operation.")
+                    .Build();
+                await message.Channel.SendMessageAsync(embed: invalidUrlMsg, messageReference: messageReference);
+                return;
+            }
+
+            targetSticker.URI = newURI;
+            await dbContext.SaveChangesAsync();
+            await CloseSession(session);
+
+            var successMsg = GetDefaultSuccessEmbedBuilder("Replace Sticker", client.CurrentUser)
+                .AddField("Replace Sticker", "Sticker has been replaced")
+                .WithThumbnailUrl(targetSticker.URI)
+                .Build();
+            await message.Channel.SendMessageAsync(embed: successMsg, messageReference: messageReference);
         }
 
         /// <inheritdoc/>
