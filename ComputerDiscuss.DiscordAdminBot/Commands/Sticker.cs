@@ -88,12 +88,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         [Command("send")]
         public async Task SendSticker([Remainder] string stickerName)
         {
-            stickerName = stickerName.ToLower();
-
             var msg = Context.Message;
             var refMsg = new MessageReference(msg.Id);
             var target = (from sticker in dbContext.Stickers.AsEnumerable()
-                          where sticker.Keyword == stickerName
+                          where new Regex($"^{stickerName}$", RegexOptions.IgnoreCase).IsMatch(sticker.Keyword)
                           select sticker).FirstOrDefault();
 
             if (target == null)
@@ -113,7 +111,6 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         [Command("reply")]
         public async Task ReplyWithSticker([Remainder] string keyword)
         {
-            keyword = keyword.ToLower();
             var tgMsg = Context.Message.ReferencedMessage as SocketMessage;
             var refMsg = new MessageReference(Context.Message.Id);
 
@@ -131,7 +128,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             try
             {
                 sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
-                           where dbSticker.Keyword == keyword
+                           where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).IsMatch(dbSticker.Keyword)
                            select dbSticker).FirstOrDefault();
 
                 if (sticker == null)
@@ -172,7 +169,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             try
             {
                 var sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
-                               where dbSticker.Keyword == keyword
+                               where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).IsMatch(dbSticker.Keyword)
                                select dbSticker).FirstOrDefault();
 
                 if (sticker == null)
@@ -212,7 +209,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         {
             var refMsg = new MessageReference(Context.Message.Id);
             var tgSticker = (from sticker in dbContext.Stickers.ToEnumerable()
-                             where sticker.Keyword == keyword
+                             where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).IsMatch(sticker.Keyword)
                              select sticker).FirstOrDefault();
 
             if (tgSticker == null)
@@ -268,7 +265,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         {
             var msgRef = new MessageReference(Context.Message.Id);
             var existSticker = (from sticker in dbContext.Stickers.ToEnumerable()
-                                where sticker.Keyword == keyword
+                                where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).IsMatch(sticker.Keyword)
                                 select sticker).FirstOrDefault();
 
             if (existSticker != null)
@@ -325,7 +322,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             {
                 var msgReference = new MessageReference(Context.Message.Id);
                 var target = (from sticker in dbContext.Stickers.ToEnumerable()
-                              where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).Match(sticker.Keyword).Success
+                              where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).IsMatch(sticker.Keyword)
                               select sticker).FirstOrDefault();
 
                 if (target == null)
@@ -386,7 +383,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             keyword = keyword.ToLower();
 
             var sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
-                           where dbSticker.Keyword == keyword
+                           where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).IsMatch(dbSticker.Keyword)
                            select dbSticker).FirstOrDefault();
             var refMsg = new MessageReference(Context.Message.Id);
 
