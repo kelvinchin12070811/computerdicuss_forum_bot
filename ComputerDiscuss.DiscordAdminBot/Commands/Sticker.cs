@@ -127,7 +127,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
 
             try
             {
-                sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
+                sticker = (from dbSticker in dbContext.Stickers
                            where new Regex($"{keyword}", RegexOptions.IgnoreCase).IsMatch(dbSticker.Keyword)
                            select dbSticker).FirstOrDefault();
 
@@ -168,7 +168,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
 
             try
             {
-                var sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
+                var sticker = (from dbSticker in dbContext.Stickers
                                where new Regex($"{keyword}", RegexOptions.IgnoreCase).IsMatch(dbSticker.Keyword)
                                select dbSticker).FirstOrDefault();
 
@@ -208,7 +208,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         public async Task RenameSticker([Remainder]String keyword)
         {
             var refMsg = new MessageReference(Context.Message.Id);
-            var tgSticker = (from sticker in dbContext.Stickers.ToEnumerable()
+            var tgSticker = (from sticker in dbContext.Stickers
                              where new Regex($"{keyword}", RegexOptions.IgnoreCase).IsMatch(sticker.Keyword)
                              select sticker).FirstOrDefault();
 
@@ -264,7 +264,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         public async Task AddSticker([Remainder] string keyword)
         {
             var msgRef = new MessageReference(Context.Message.Id);
-            var existSticker = (from sticker in dbContext.Stickers.ToEnumerable()
+            var existSticker = (from sticker in dbContext.Stickers
                                 where new Regex($"{keyword}", RegexOptions.IgnoreCase).IsMatch(sticker.Keyword)
                                 select sticker).FirstOrDefault();
 
@@ -321,7 +321,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             try
             {
                 var msgReference = new MessageReference(Context.Message.Id);
-                var target = (from sticker in dbContext.Stickers.ToEnumerable()
+                var target = (from sticker in dbContext.Stickers
                               where new Regex($"{keyword}", RegexOptions.IgnoreCase).IsMatch(sticker.Keyword)
                               select sticker).FirstOrDefault();
 
@@ -382,7 +382,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         {
             keyword = keyword.ToLower();
 
-            var sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
+            var sticker = (from dbSticker in dbContext.Stickers
                            where new Regex($"{keyword}", RegexOptions.IgnoreCase).IsMatch(dbSticker.Keyword)
                            select dbSticker).FirstOrDefault();
             var refMsg = new MessageReference(Context.Message.Id);

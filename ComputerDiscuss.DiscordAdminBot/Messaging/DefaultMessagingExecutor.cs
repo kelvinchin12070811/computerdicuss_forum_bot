@@ -131,7 +131,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
                 return;
             }
 
-            if ((from sticker in dbContext.Stickers.ToEnumerable()
+            if ((from sticker in dbContext.Stickers
                  where sticker.Keyword == nwStickerName
                  select sticker).FirstOrDefault() != null)
             {
@@ -146,7 +146,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
             }
 
             var sessionContext = JObject.Parse(session.Context);
-            var tgSticker = (from sticker in dbContext.Stickers.ToEnumerable()
+            var tgSticker = (from sticker in dbContext.Stickers
                              where sticker.Keyword == (string)sessionContext["sticker_name"]
                              select sticker).FirstOrDefault();
             tgSticker.Keyword = nwStickerName;
@@ -189,7 +189,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Messaging
 
             var context = JObject.Parse(session.Context);
             var stickerName = (string)context["sticker_name"];
-            var targetSticker = (from sticker in dbContext.Stickers.ToEnumerable()
+            var targetSticker = (from sticker in dbContext.Stickers
                                  where new Regex(stickerName, RegexOptions.IgnoreCase).IsMatch(sticker.Keyword)
                                  select sticker).FirstOrDefault();
 
