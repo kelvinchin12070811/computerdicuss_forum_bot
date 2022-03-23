@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  **********************************************************************************************************************/
-
 using Discord;
 using Discord.Commands;
 using log4net;
@@ -77,7 +76,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         {
             var embed = GetEmbedWithSuccessTemplate("Get Help")
                 .AddField($"@{botUsername} help", "Show this message")
-                .AddField($"@{botUsername} general", "Show general commands")
+                .AddField($"@{botUsername} help general", "Show general commands")
                 .AddField($"@{botUsername} help sticker", "Get help on stickers related commands");
             await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
         }
@@ -94,7 +93,8 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                 .AddField($"@{botUsername} ping", "Get the ping between the bot and your client, also between the "
                     + "connection of bot and Discord server")
                 .AddField($"@{botUsername} game {{text}}", "Set the \"Playing\" status of the bot, only admin can "
-                    + "access this command");
+                    + "access this command")
+                .AddField($"@{botUsername} issues", "Get the location of the bot's issues tracker.");
             await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
         }
 

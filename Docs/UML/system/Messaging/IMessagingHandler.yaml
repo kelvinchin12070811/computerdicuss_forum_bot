@@ -1,0 +1,14 @@
+IMessagingHandler:
+  type: interface
+  public property:
+    ApplyDependencies:
+      type: function
+      return: void
+      arg:
+        provider: System.IServiceProvider
+
+    Exec:
+      type: function
+      return: System.Threading.Tasks.Task<bool>
+      arg:
+        message: Discord.WebSocket.SocketMessage

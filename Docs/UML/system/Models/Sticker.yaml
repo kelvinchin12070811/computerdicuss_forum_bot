@@ -1,0 +1,26 @@
+Sticker:
+  type: class
+  public property:
+    constructor: ~
+    constructor:
+      arg:
+        keyword: string
+        uri: string
+
+    Id:
+      type: uint64
+      accessors:
+       - get
+       - set
+    
+    Keyword:
+      type: string
+      accessors:
+       - get
+       - set
+    
+    URI:
+      type: string
+      accessors:
+       - get
+       - set

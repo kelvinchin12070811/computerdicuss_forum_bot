@@ -2,14 +2,16 @@
 using ComputerDiscuss.DiscordAdminBot.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ComputerDiscuss.DiscordAdminBot.Migrations
 {
     [DbContext(typeof(BotDBContext))]
-    partial class BotDBContextModelSnapshot : ModelSnapshot
+    [Migration("20211007190010_AddedConverSession")]
+    partial class AddedConverSession
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -17,14 +19,11 @@ namespace ComputerDiscuss.DiscordAdminBot.Migrations
 
             modelBuilder.Entity("ComputerDiscuss.DiscordAdminBot.Models.ConverSession", b =>
                 {
-                    b.Property<ulong>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Action")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong>("ChannelId")
+                    b.Property<long>("ChannelId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Context")
@@ -33,20 +32,14 @@ namespace ComputerDiscuss.DiscordAdminBot.Migrations
                     b.Property<long>("CreatedTime")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Discriminator")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong>("GuildId")
+                    b.Property<long>("GuildId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<ulong>("Lifetime")
+                    b.Property<long>("Lifetime")
                         .HasColumnType("INTEGER");
 
-                    b.Property<ulong>("MessageId")
+                    b.Property<long>("MessageId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -57,7 +50,8 @@ namespace ComputerDiscuss.DiscordAdminBot.Migrations
                 {
                     b.Property<ulong>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("id");
 
                     b.Property<string>("Keyword")
                         .HasColumnType("TEXT");
@@ -66,8 +60,6 @@ namespace ComputerDiscuss.DiscordAdminBot.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Keyword");
 
                     b.ToTable("Stickers");
                 });

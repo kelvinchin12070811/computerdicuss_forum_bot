@@ -19,6 +19,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Models
         /// Stickers data.
         /// </summary>
         public DbSet<Sticker> Stickers { get; set; }
+        /// <summary>
+        /// Conversations data.
+        /// </summary>
+        public DbSet<ConverSession> ConverSessions { get; set; }
 
         /// <summary>
         /// Path to the SQLite3 database file.

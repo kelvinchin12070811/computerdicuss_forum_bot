@@ -1,0 +1,61 @@
+CommandHandler:
+  type: class
+  public property:
+    discord: 
+      type: Discord.DiscordSocketClient
+      modifier:
+         - static
+
+    commands:
+      type: Discord.Commands.CommandService
+      modifier:
+         - static
+
+    config:
+      type: Microsoft.Extensions.Configuration.IConfigurationRoot
+      modifier:
+         - static
+
+    provider:
+      type: System.IServiceProvider
+      modifier:
+         - static
+
+    log:
+      type: log4net.ILog
+      modifier:
+         - static
+
+    dbContext:
+      type: /Models/BotDBContext
+      modifer:
+         - const
+
+    messagingHandler:
+      type: /Messaging/IMessagingHandler
+      modifier:
+         - const
+
+    constructor:
+      arg:
+        discord: Discord.DiscordSocketClient
+        commands: Discord.Commands.CommandService
+        config: Microsoft.Extensions.Configuration.IConfigurationRoot
+        provider: System.IServiceProvider
+        log: log4net.ILog
+        dbContext: /Models/BotDBContext
+        messagingHandler: /Messaging/IMessagingHandler
+
+    OnMessageReceived:
+      type: function
+      return: System.Threading.Tasks.Task
+      arg:
+        message: Discord.SocketMessage
+
+    OnLoggedOut:
+      type: function
+      return: System.Threading.Tasks.Task
+
+    OnReady:
+      type: function
+      return: System.Threading.Tasks.Task

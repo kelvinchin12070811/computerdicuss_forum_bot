@@ -11,6 +11,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using log4net;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -65,6 +66,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             var client = Context.Client;
             var refMsg = new MessageReference(msg.Id);
             var stickers = (from sticker in dbContext.Stickers.AsEnumerable()
+                            orderby sticker.Keyword ascending
                             select sticker.Keyword).ToList();
 
             if (stickers.Count == 0)
@@ -86,12 +88,10 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         [Command("send")]
         public async Task SendSticker([Remainder] string stickerName)
         {
-            stickerName = stickerName.ToLower();
-
             var msg = Context.Message;
             var refMsg = new MessageReference(msg.Id);
             var target = (from sticker in dbContext.Stickers.AsEnumerable()
-                          where sticker.Keyword == stickerName
+                          where new Regex($"^{stickerName}$", RegexOptions.IgnoreCase).IsMatch(sticker.Keyword)
                           select sticker).FirstOrDefault();
 
             if (target == null)
@@ -111,7 +111,6 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         [Command("reply")]
         public async Task ReplyWithSticker([Remainder] string keyword)
         {
-            keyword = keyword.ToLower();
             var tgMsg = Context.Message.ReferencedMessage as SocketMessage;
             var refMsg = new MessageReference(Context.Message.Id);
 
@@ -129,7 +128,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             try
             {
                 sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
-                           where dbSticker.Keyword == keyword
+                           where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).IsMatch(dbSticker.Keyword)
                            select dbSticker).FirstOrDefault();
 
                 if (sticker == null)
@@ -170,7 +169,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             try
             {
                 var sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
-                               where dbSticker.Keyword == keyword
+                               where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).IsMatch(dbSticker.Keyword)
                                select dbSticker).FirstOrDefault();
 
                 if (sticker == null)
@@ -206,150 +205,169 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         /// <returns>Asynchronous task that current command handler running on.</returns>
         [Command("rename")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        [RequireOwner]
-        public async Task RenameSticker(StickerRenameOperationType args)
+        public async Task RenameSticker([Remainder]String keyword)
         {
             var refMsg = new MessageReference(Context.Message.Id);
+            var tgSticker = (from sticker in dbContext.Stickers.ToEnumerable()
+                             where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).IsMatch(sticker.Keyword)
+                             select sticker).FirstOrDefault();
 
-            if ((from sticker in dbContext.Stickers.ToEnumerable()
-                 where sticker.Keyword == args.Next
-                 select sticker).FirstOrDefault() != null)
+            if (tgSticker == null)
             {
-                var embedBuilder = GetEmbedWithErrorTemplate("Rename Sticker")
-                    .AddField("Error", $"There's already a sticker called \"{args.Next}\"");
-                await ReplyAsync(embed: embedBuilder.Build(), messageReference: refMsg);
+                var errMsg = GetEmbedWithErrorTemplate("Rename sticker")
+                    .AddField("Sticker not exist", $"Can't find sticker {keyword} in the library.")
+                    .Build();
+                await ReplyAsync(embed: errMsg, messageReference: refMsg);
                 return;
             }
 
-            var curSticker = (from sticker in dbContext.Stickers.ToEnumerable()
-                              where sticker.Keyword == args.Cur
-                              select sticker).FirstOrDefault();
-
-            if (curSticker == null)
+            var successMsg = GetEmbedWithSuccessTemplate("Rename sticker")
+                .AddField("What's is the new keyword of the sticker?", "Reply this message to complete the action or "
+                    + "reply \"cancel\" to cancel the action.")
+                .WithThumbnailUrl(tgSticker.URI)
+                .Build();
+            var converStartMsg = await ReplyAsync(embed: successMsg, messageReference: refMsg);
+            var msgAuthor = Context.Message.Author;
+            var converSession = new ConverSession
             {
-                var embedBuilder = GetEmbedWithErrorTemplate("Rename Sticker")
-                    .AddField("Error", $"Sticker \"{args.Cur}\" did not exist in library.");
-                await ReplyAsync(embed: embedBuilder.Build(), messageReference: refMsg);
-                return;
-            }
+                MessageId = converStartMsg.Id,
+                ChannelId = Context.Channel.Id,
+                GuildId = Context.Guild.Id,
+                CreatedTime = Context.Message.CreatedAt.ToUnixTimeSeconds(),
+                Username = msgAuthor.Username,
+                Discriminator = msgAuthor.Discriminator,
+                Lifetime = 5 * 3600,
+                Action = "sticker_rename",
+                Context = new JObject(
+                    new JProperty("sticker_name", keyword.ToLower())
+                ).ToString()
+            };
 
             try
             {
-                curSticker.Keyword = args.Next;
+                await dbContext.ConverSessions.AddAsync(converSession);
                 await dbContext.SaveChangesAsync();
-                var embed = GetEmbedWithSuccessTemplate("Rename Sticker")
-                    .AddField("Sticker Renamed", $"\"{args.Cur}\" has been renamed to \"{args.Next}\"")
-                    .WithThumbnailUrl(curSticker.URI);
-                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                logger.Info("Exception occurred!", e);
-                await ReplyWithInternalServerError(refMsg);
+                logger.Error("Exception occured!", ex);
             }
         }
 
         /// <summary>
         /// Allow admin to add sticker to library.
         /// </summary>
-        /// <param name="args">Required args to execute this command</param>
+        /// <param name="keyword">Keyword of the sticker to add.</param>
         /// <returns>Asynchronous task that host the event handler of add sticker command.</returns>
         [Command("add")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task AddSticker(StickerAddOrReplaceOperationType args)
+        public async Task AddSticker([Remainder] string keyword)
         {
-            var refMsg = new MessageReference(Context.Message.Id);
+            var msgRef = new MessageReference(Context.Message.Id);
+            var existSticker = (from sticker in dbContext.Stickers.ToEnumerable()
+                                where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).IsMatch(sticker.Keyword)
+                                select sticker).FirstOrDefault();
 
-            if (!validURL.Match(args.URI).Success)
+            if (existSticker != null)
             {
                 var embed = GetEmbedWithErrorTemplate("Add Sticker")
-                    .AddField("Invalid Or Unsupported URI", "URI provided is not valid or unsupported");
-                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+                    .AddField("Sticker Exists", $"Sticker \"{keyword}\" already exist in library.")
+                    .Build();
+                await ReplyAsync(embed: embed, messageReference: msgRef);
                 return;
             }
 
-            if ((from dbSticker in dbContext.Stickers.ToEnumerable()
-                 where dbSticker.Keyword == args.Keyword
-                 select dbSticker).FirstOrDefault() != null)
+            var newStickerEmbed = GetEmbedWithSuccessTemplate("Add Sticker")
+                .AddField("What's the URI of the sticker?", "Reply with this message to complete the action or reply " +
+                    "\"cancel\" to cancel the action.")
+                .Build();
+            var converStartMsg = await ReplyAsync(embed: newStickerEmbed, messageReference: msgRef);
+            var msgAuthor = Context.Message.Author;
+            var converSession = new ConverSession
             {
-                var embed = GetEmbedWithErrorTemplate("Add Sticker")
-                    .AddField("Sticker Exist", $"\"{args.Keyword}\" already exist in the library.");
-                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
-                return;
-            }
-
-            var sticker = new Models.Sticker(args.Keyword, args.URI);
+                MessageId = converStartMsg.Id,
+                ChannelId = Context.Channel.Id,
+                GuildId = Context.Guild.Id,
+                CreatedTime = Context.Message.CreatedAt.ToUnixTimeSeconds(),
+                Username = msgAuthor.Username,
+                Discriminator = msgAuthor.Discriminator,
+                Lifetime = 5 * 3600,
+                Action = "sticker_add",
+                Context = new JObject(
+                    new JProperty("sticker_name", keyword.ToLower())
+                ).ToString()
+            };
 
             try
             {
-                await dbContext.Stickers.AddAsync(sticker);
+                await dbContext.ConverSessions.AddAsync(converSession);
                 await dbContext.SaveChangesAsync();
-
-                var embed = GetEmbedWithSuccessTemplate("Add Sticker")
-                    .AddField("Sticker", $"\"{args.Keyword}\" has been added to the library.")
-                    .WithThumbnailUrl(args.URI);
-                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
             }
             catch (Exception e)
             {
-                dbContext.Stickers.Remove(sticker);
-                await dbContext.SaveChangesAsync();
-
-                logger.Error("Exception occurred!", e);
-                await ReplyWithInternalServerError(refMsg);
+                logger.Error("Exception occured!", e);
             }
         }
 
         /// <summary>
         /// Allow admin to replace a sticker with another URI while keep the keyword as same.
         /// </summary>
-        /// <param name="args">Args required to executed the command.</param>
+        /// <param name="keyword">Keyword of the sticker to remove.</param>
         /// <returns>Asynchronous task that host the execution of the command handler.</returns>
         [Command("replace")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task ReplaceSticker(StickerAddOrReplaceOperationType args)
+        public async Task ReplaceSticker([Remainder] string keyword)
         {
-            var refMsg = new MessageReference(Context.Message.Id);
-
-            if (!validURL.Match(args.URI).Success)
-            {
-                var embed = GetEmbedWithErrorTemplate("Replace Sticker")
-                    .AddField("Invalid Or Unsupported URI", "URI provided is unsupported or invalid");
-                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
-                return;
-            }
-
-            var sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
-                           where dbSticker.Keyword == args.Keyword
-                           select dbSticker).FirstOrDefault();
-
-            if (sticker == null)
-            {
-                var embed = GetEmbedWithErrorTemplate("Replace Sticker")
-                    .AddField("Error", $"Sticker \"{args.Keyword}\" does not exits in library.");
-                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
-                return;
-            }
-
-            var prevStickerURI = sticker.URI;
-
             try
             {
-                sticker.URI = args.URI;
-                await dbContext.SaveChangesAsync();
+                var msgReference = new MessageReference(Context.Message.Id);
+                var target = (from sticker in dbContext.Stickers.ToEnumerable()
+                              where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).IsMatch(sticker.Keyword)
+                              select sticker).FirstOrDefault();
 
-                var embed = GetEmbedWithSuccessTemplate("Replace Sticker")
-                    .AddField("Sticker Replaced", $"\"{sticker.Keyword}\" has been updated")
-                    .WithThumbnailUrl(sticker.URI);
-                await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
+                if (target == null)
+                {
+                    var errMsg = GetEmbedWithErrorTemplate("Replace Sticker")
+                        .AddField("Sticker not exist", $"Couldn't found sticker \"{keyword}\"")
+                        .Build();
+                    await ReplyAsync(embed: errMsg, messageReference: msgReference);
+                    return;
+                }
+
+                var requestNewStickerURIMsg = GetEmbedWithSuccessTemplate("Replace Sticker")
+                    .AddField("What's the URI of the sticker?", "Reply with this message to complete the action or reply " +
+                        "\"cancel\" to cancel the action.")
+                    .Build();
+                var converStartMsg = await ReplyAsync(embed: requestNewStickerURIMsg, messageReference: msgReference);
+
+                var context = new ConverSession
+                {
+                    MessageId = converStartMsg.Id,
+                    ChannelId = Context.Channel.Id,
+                    GuildId = Context.Guild.Id,
+                    CreatedTime = Context.Message.CreatedAt.ToUnixTimeSeconds(),
+                    Username = Context.User.Username,
+                    Discriminator = Context.User.Discriminator,
+                    Lifetime = 5 * 3600,
+                    Action = "sticker_replace",
+                    Context = new JObject(
+                        new JProperty("sticker_name", keyword.ToLower())
+                    ).ToString()
+                };
+
+                try
+                {
+                    await dbContext.AddAsync(context);
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Exception occured!", ex);
+                }
             }
             catch (Exception e)
             {
-                sticker.URI = prevStickerURI;
-                await dbContext.SaveChangesAsync();
-
-                logger.Error("Exception occurred!", e);
-                await ReplyWithInternalServerError(refMsg);
+                logger.Error("Exception occured!", e);
             }
         }
 
@@ -365,7 +383,7 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
             keyword = keyword.ToLower();
 
             var sticker = (from dbSticker in dbContext.Stickers.ToEnumerable()
-                           where dbSticker.Keyword == keyword
+                           where new Regex($"^{keyword}$", RegexOptions.IgnoreCase).IsMatch(dbSticker.Keyword)
                            select dbSticker).FirstOrDefault();
             var refMsg = new MessageReference(Context.Message.Id);
 

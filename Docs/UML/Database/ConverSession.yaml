@@ -1,0 +1,22 @@
+ConverSession:
+  Id:
+    type: uint64_t
+    key: primary
+  MessageId:
+    type: uint64_t
+  ChannelId:
+    type: uint64_t
+  GuildId:
+    type: uint64_t
+  Username:
+    type: string
+  Discriminator:
+    type: string
+  CreatedTime:
+    type: int64_t
+  Lifetime:
+    type: uint64_t
+  Action:
+    type: string
+  Context:
+    type: string

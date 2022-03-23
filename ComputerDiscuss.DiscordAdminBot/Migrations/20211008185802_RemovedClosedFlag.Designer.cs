@@ -2,14 +2,16 @@
 using ComputerDiscuss.DiscordAdminBot.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ComputerDiscuss.DiscordAdminBot.Migrations
 {
     [DbContext(typeof(BotDBContext))]
-    partial class BotDBContextModelSnapshot : ModelSnapshot
+    [Migration("20211008185802_RemovedClosedFlag")]
+    partial class RemovedClosedFlag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,9 +23,6 @@ namespace ComputerDiscuss.DiscordAdminBot.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Action")
-                        .HasColumnType("TEXT");
-
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("INTEGER");
 
@@ -32,9 +31,6 @@ namespace ComputerDiscuss.DiscordAdminBot.Migrations
 
                     b.Property<long>("CreatedTime")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Discriminator")
-                        .HasColumnType("TEXT");
 
                     b.Property<ulong>("GuildId")
                         .HasColumnType("INTEGER");
@@ -66,8 +62,6 @@ namespace ComputerDiscuss.DiscordAdminBot.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Keyword");
 
                     b.ToTable("Stickers");
                 });

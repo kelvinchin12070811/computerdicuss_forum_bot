@@ -3,11 +3,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  **********************************************************************************************************************/
+using ComputerDiscuss.DiscordAdminBot.Messaging;
+using ComputerDiscuss.DiscordAdminBot.Models;
 using Discord.Commands;
 using Discord.WebSocket;
 using log4net;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ComputerDiscuss.DiscordAdminBot.Services
@@ -37,6 +40,14 @@ namespace ComputerDiscuss.DiscordAdminBot.Services
         /// Logger that perform logging.
         /// </summary>
         public static ILog log;
+        /// <summary>
+        /// Database of the bot.
+        /// </summary>
+        private readonly BotDBContext dbContext;
+        /// <summary>
+        /// Handler that handler specific pattern of message.
+        /// </summary>
+        private readonly IMessagingHandler messagingHandler;
 
         /// <summary>
         /// Constructor that used for dependencies injection.
@@ -46,14 +57,18 @@ namespace ComputerDiscuss.DiscordAdminBot.Services
         /// <param name="config">Configuration for bot.</param>
         /// <param name="provider">ServicesProvider which provide required services or dependencies.</param>
         /// <param name="log">Logger that perform logging.</param>
+        /// <param name="dbContext">Database of the bot.</param>
+        /// <param name="messagingHandler">Handler that handler specific pattern of message.</param>
         public CommandHandler(DiscordSocketClient discord, CommandService commands, IConfigurationRoot config,
-            IServiceProvider provider, ILog log)
+            IServiceProvider provider, ILog log, BotDBContext dbContext, IMessagingHandler messagingHandler)
         {
             CommandHandler.discord = discord;
             CommandHandler.commands = commands;
             CommandHandler.config = config;
             CommandHandler.provider = provider;
             CommandHandler.log = log;
+            this.dbContext = dbContext;
+            this.messagingHandler = messagingHandler;
 
             CommandHandler.discord.Ready += OnReady;
             CommandHandler.discord.LoggedOut += OnLoggedOut;
@@ -69,6 +84,11 @@ namespace ComputerDiscuss.DiscordAdminBot.Services
         {
             var usrmsg = message as SocketUserMessage;
             if (usrmsg.Author.IsBot) return;
+
+            if (await messagingHandler.Exec(usrmsg))
+            {
+                return;
+            }
 
             var context = new SocketCommandContext(discord, usrmsg);
             int pos = 0;

@@ -1,0 +1,28 @@
+Startup:
+  type: class
+  public property:
+    Configuration:
+      type: Microsoft.Extensions.Configuration.IConfigurationRoot
+      accessor:
+         - get
+    
+    Logger:
+      type: log4net.ILog
+      accessor: 
+         - get
+
+    constructor:
+      arg:
+        args: string[]
+
+    RunAsync:
+      type: function
+      return: System.Threading.Tasks.Task
+      arg:
+        args: string[]
+
+    ConfigureServices:
+      type: function
+      return: void
+      arg:
+        services: Microsoft.Extensions.DependencyInjection.IServiceCollection

@@ -3,6 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  *********************************************************************************************************************/
+using ComputerDiscuss.DiscordAdminBot.Messaging;
 using ComputerDiscuss.DiscordAdminBot.Models;
 using ComputerDiscuss.DiscordAdminBot.Services;
 using Discord.Commands;
@@ -78,7 +79,8 @@ namespace ComputerDiscuss.DiscordAdminBot
         {
             var cancelToken = new CancellationTokenSource();
 
-            Console.CancelKeyPress += new ConsoleCancelEventHandler((obj, ev) => {
+            Console.CancelKeyPress += new ConsoleCancelEventHandler((obj, ev) =>
+            {
                 cancelToken.Cancel();
                 ev.Cancel = true;
             });
@@ -87,6 +89,7 @@ namespace ComputerDiscuss.DiscordAdminBot
             ConfigureServices(services);
 
             var provider = services.BuildServiceProvider();
+            provider.GetRequiredService<IMessagingHandler>().ApplyDependencies(provider);
             provider.GetRequiredService<CommandHandler>();
 
             var startupService = provider.GetRequiredService<StartupService>();
@@ -120,21 +123,21 @@ namespace ComputerDiscuss.DiscordAdminBot
         /// <param name="services">ServiceCollection object to configure.</param>
         private void ConfigureServices(IServiceCollection services)
         {
-
             services.AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
             {
                 MessageCacheSize = 1000
             }));
             services.AddSingleton(new CommandService(new CommandServiceConfig
-             {
-                 DefaultRunMode = RunMode.Async,
-                 CaseSensitiveCommands = false
-             }));
+            {
+                DefaultRunMode = RunMode.Async,
+                CaseSensitiveCommands = false
+            }));
             services.AddSingleton<CommandHandler>();
             services.AddSingleton<StartupService>();
             services.AddSingleton(Configuration);
             services.AddSingleton<ILog>(Logger);
             services.AddDbContext<BotDBContext>();
+            services.AddSingleton<IMessagingHandler>(new DefaultMessagingHandler());
         }
     }
 }
