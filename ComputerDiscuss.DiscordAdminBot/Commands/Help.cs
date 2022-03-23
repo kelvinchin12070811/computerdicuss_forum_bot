@@ -108,22 +108,20 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
         {
             var embed = GetEmbedWithSuccessTemplate("Get Help - Sticker")
                 .AddField($"@{botUsername} sticker send {{keyword}}",
-                    "Send a sticker to the chat where the command is executed, where the {keyword} is the name of "
+                    "Send a sticker to the chat where the command is executed, where the keyword is the name of "
                         + $"sticker.")
                 .AddField($"@{botUsername} sticker reply {{keyword}}", "Same as sticker send, but it send sticker by "
                     + "replying to a message where the command replied to.")
                 .AddField($"@{botUsername} sticker preview {{keyword}}", "Also send sticker to channel, but it will "
                     + "be deleted after certain amount of time.")
-                .AddField($"@{botUsername} sticker add keyword: {{keyword}} uri: {{url}}",
+                .AddField($"@{botUsername} sticker add {{keyword}}",
                     "Allow admin to add a sticker to library, where keyword unique id of the sticker and uri is url to "
-                        + "the sticker's image or gif. Keyword that contain space must be enclosed with \"\"")
-                .AddField($"@{botUsername} sticker rename cur: {{current keyword}} next: {{new keyword}}",
-                    "Allow admin to rename a sticker's keyword to another, where cur is the current keyword and next "
-                        + "is new unique keyword to the sticker. String that contain space must be enclosed with \"\"")
-                .AddField($"@{botUsername} sticker replace keyword: {{keyword}} uri: {{uri}}",
+                        + "the sticker's image or gif.")
+                .AddField($"@{botUsername} sticker rename {{keyword}}",
+                    "Allow admin to rename a sticker's keyword to another. Keyword is new unique id of the sticker.")
+                .AddField($"@{botUsername} sticker replace {{keyword}}",
                     "Allow admin to replace a sticker's URI to another, where keyword is the sticker to replace and "
-                        + "uri is the new URL of the image or gif. String that contain space must be enclosed "
-                        + "with \"\"")
+                        + "uri is the new URL of the image or gif.")
                 .AddField($"@{botUsername} sticker remove {{keyword}}",
                     "Allow admin to remove a sticker from library, where keyword is the unique id of sticker to "
                         + "remove.");
