@@ -94,6 +94,8 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                     + "connection of bot and Discord server")
                 .AddField($"@{botUsername} game {{text}}", "Set the \"Playing\" status of the bot, only admin can "
                     + "access this command")
+                .AddField($"@{botUsername} gg {{text}}", "Fire a Google search and reply with a result link.")
+                .AddField($"@{botUsername} ddg {{text}}", "Fire a DuckDuckGo search and reply with a result link.")
                 .AddField($"@{botUsername} issues", "Get the location of the bot's issues tracker.");
             await ReplyAsync(embed: embed.Build(), messageReference: refMsg);
         }
