@@ -95,5 +95,48 @@ namespace ComputerDiscuss.DiscordAdminBot.Commands
                 "the link bellow for more information:\nhttps://github.com/kelvinchin12070811/" +
                 "computerdicuss_forum_bot\n\n~~but ussually only one developer is working on it, LOL~~");
         }
+
+        /// <summary>
+        /// Retrive Google search directly via the bot, no longer need to open browser and search Google on Google.
+        /// </summary>
+        /// <param name="keyword">Keywords to search.</param>
+        /// <returns>Asynchonous task that execute the command handler.</returns>
+        [Command("gg")]
+        public async Task GoogleThat([Remainder] string keyword)
+        {
+            const string googleBaseURL = "https://www.google.com/search?q={0}";
+            var refMsg = new MessageReference(Context.Message.Id);
+            var query = string.Format(googleBaseURL, keyword.Trim().Replace(" ", "+"));
+            var replyMsg = new EmbedBuilder();
+
+            replyMsg.WithTitle("Click here to get Google result.");
+            replyMsg.WithUrl(query);
+            replyMsg.WithColor(66, 133, 244);
+            replyMsg.WithFooter("Powered by Google", "https://icons.duckduckgo.com/ip3/www.google.com.ico");
+
+            await ReplyAsync(embed: replyMsg.Build(), messageReference: refMsg);
+        }
+
+        /// <summary>
+        /// Retrive DuckDuckGo serach directly via the bot, no longer need to open browser and search DuckDuckGo on
+        /// DuckDuckGo.
+        /// </summary>
+        /// <param name="keyword">Keywords to search.</param>
+        /// <returns>Asynchonous task that execut the command handler.</returns>
+        [Command("ddg")]
+        public async Task DuckDuckGoThat([Remainder] string keyword)
+        {
+            const string ddgBaseURL = "https://www.duckduckgo.com/?q={0}";
+            var refMsg = new MessageReference(Context.Message.Id);
+            var query = string.Format(ddgBaseURL, keyword.Trim().Replace(" ", "+"));
+            var replyMsg = new EmbedBuilder();
+
+            replyMsg.WithTitle("Click here to get DuckDuckGo result.");
+            replyMsg.WithUrl(query);
+            replyMsg.WithColor(227, 113, 81);
+            replyMsg.WithFooter("Powered by DuckDuckGo", "https://icons.duckduckgo.com/ip3/www.duckduckgo.com.ico");
+
+            await ReplyAsync(embed: replyMsg.Build(), messageReference: refMsg);
+        }
     }
 }
