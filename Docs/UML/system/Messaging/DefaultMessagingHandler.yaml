@@ -1,8 +1,0 @@
-DefaultMessagingHandler:
-  type: class
-  inherit: ./IMessagingHandler
-  private attribute:
-    client: Discord.WebSocket.DiscordSocketClient
-    logger: Log4Net.ILog
-    dbContext: /Models/BotDBContext
-    messagingExecutor: ./IMessagingExecutor
