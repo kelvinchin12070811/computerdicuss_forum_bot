@@ -1,28 +1,22 @@
-# 電腦討論與分享區-多功能-机器人
-多功能一体化机器人
+# Computer Discuss Forum Bot
 
-## 初衷
-解决一些机器人因为需要Premium才能使用的问题
-减少机器人在群里
-优化群的结构
+This is a multifunctional administrative bot for discord, created by
+[Computer Discuss Forum](https://discord.gg/computerdicussgroup).
 
-## 目标进度
---系统建设--
-- [x] [基础建设]
-- [x] [表情系统]
-- [ ] [网页管理系统]
-- [ ] [身份组管理系统]
-- [ ] [玩家资料变化系统]
-- [ ] [关键字侦测系统]
-- [ ] [定时通知系统]
-- [ ] [公告系统]
+The original goal for creating this bot is to provide an alternative solution to the features of Discord's server
+modifications which offered by other bot as premium features. And hopefully replace most of the features of other bots
+and hence "flatten" to a single bot.
 
---优化系统--
-- [ ] [美化指令系统]
-- [ ] [汉化]
-- [ ] [优化系统使用资源]
+## Install
 
-## 安装方法
+## Dependencies
 
---系统前置程序要求--
-- [ ] [.Net Core](https://dotnet.microsoft.com/download) [最低版本：5.0] 
+This bot is currently build with a Discord bot library in C++ -- [D++](https://dpp.dev/). More dependencies required
+please refer to the following list:
+
+## Usage
+
+## Road Map
+
+## License
+[MPL 2.0](https://choosealicense.com/licenses/mpl-2.0/)
