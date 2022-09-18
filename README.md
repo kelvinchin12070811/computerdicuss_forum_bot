@@ -14,6 +14,11 @@ and hence "flatten" to a single bot.
 This bot is currently build with a Discord bot library in C++ -- [D++](https://dpp.dev/). More dependencies required
 please refer to the following list:
 
+
+| Library | Homepage | License |
+|:-------:|:--------:|:-------:|
+| D++ | [dpp.dev](https://dpp.dev) | Apache 2.0 |
+
 ## Usage
 
 ## Road Map
