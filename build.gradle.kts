@@ -20,6 +20,7 @@ dependencies {
 
     implementation("net.dv8tion:JDA:5.0.0-alpha.20")
     implementation("commons-cli:commons-cli:1.5.0")
+    implementation("org.snakeyaml:snakeyaml-engine:2.4")
 }
 
 tasks.getByName<Test>("test") {

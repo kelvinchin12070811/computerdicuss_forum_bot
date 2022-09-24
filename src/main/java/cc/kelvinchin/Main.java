@@ -19,11 +19,14 @@ public class Main {
         HelpFormatter helpMsg = new HelpFormatter();
 
         try {
-           cmdLine = parser.parse(options, args);
+            cmdLine = parser.parse(options, args);
 
-           if (cmdLine.hasOption("version")) printVersion();
-           if (cmdLine.hasOption("help")) printHelp(options, helpMsg);
-        } catch (ParseException e) {
+            if (cmdLine.hasOption("version")) printVersion();
+            if (cmdLine.hasOption("help")) printHelp(options, helpMsg);
+
+            if (cmdLine.hasOption("config")) Config.parseConfig(cmdLine.getOptionValue("configFile"));
+            else Config.parseConfig();
+        } catch (Exception e) {
             System.err.println(e.getMessage());
             System.exit(0);
         }
