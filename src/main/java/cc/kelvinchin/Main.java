@@ -30,6 +30,8 @@ public class Main {
             System.err.println(e.getMessage());
             System.exit(0);
         }
+
+        Bot.INSTANCE.init();
     }
 
     public static void printVersion() {

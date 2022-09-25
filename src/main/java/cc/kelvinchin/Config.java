@@ -34,7 +34,7 @@ public final class Config {
         var config = (Map<String, Object>) load.loadFromInputStream(configFile);
 
         token = (String) config.get("token");
-        clientID = (String) config.get("client id");
+        clientID = Long.toString((long) config.get("client id"));
         autoDisposeDuration = (Integer) config.get("auto dispose duration");
 
         System.out.printf("token: %s\nclient id: %s\nauto dispose duration: %s\n", token, clientID,
