@@ -31,7 +31,12 @@ public class Main {
             System.exit(0);
         }
 
-        Bot.INSTANCE.init();
+        try {
+            Bot.INSTANCE.init();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public static void printVersion() {

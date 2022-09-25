@@ -14,6 +14,8 @@ public final class Config {
     public static String token = "";
     public static String clientID = "";
     public static int autoDisposeDuration = 0;
+    public static String serverID = "";
+    public static boolean isProduction = false;
 
     public static void parseConfig() throws FileNotFoundException {
         parseConfig("");
@@ -29,15 +31,14 @@ public final class Config {
             if (configFile == null) throw new FileNotFoundException("Failed to load config.yaml from resources");
         } else {
             configFile = new FileInputStream(path);
+            isProduction = true;
         }
 
         var config = (Map<String, Object>) load.loadFromInputStream(configFile);
 
-        token = (String) config.get("token");
-        clientID = Long.toString((long) config.get("client id"));
-        autoDisposeDuration = (Integer) config.get("auto dispose duration");
-
-        System.out.printf("token: %s\nclient id: %s\nauto dispose duration: %s\n", token, clientID,
-                autoDisposeDuration);
+        token = config.get("token").toString();
+        clientID = config.get("client id").toString();
+        autoDisposeDuration = Integer.parseInt(config.get("auto dispose duration").toString());
+        serverID = config.get("server id").toString();
     }
 }
