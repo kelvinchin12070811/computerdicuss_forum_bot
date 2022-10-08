@@ -27,6 +27,7 @@ public enum Bot {
         Map<String, String> commands = new TreeMap();
         commands.put("ping", "Send ping response");
         commands.put("issues", "Get the link to GitHub Issue page.");
+        commands.put("status", "Set new status of the bot");
 
         if (Config.isProduction) {
             for (var commandName : commands.keySet()) {
