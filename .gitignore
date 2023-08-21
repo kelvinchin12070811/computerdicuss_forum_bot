@@ -389,3 +389,7 @@ FodyWeavers.xsd
 
 .DS_Store
 **/.vscode/**
+
+# Added by cargo
+
+/target
