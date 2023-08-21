@@ -16,6 +16,9 @@
 # Mono auto generated files
 mono_crash.*
 
+# Secrets
+config.toml
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
