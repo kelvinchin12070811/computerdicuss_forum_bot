@@ -19,4 +19,12 @@ impl Database {
     pub fn get_pocketbase_domain(&self) -> &String {
         &self.pocketbase_domain
     }
+
+    pub fn get_pocketbase_username(&self) -> &String {
+        &self.pocketbase_username
+    }
+
+    pub fn get_pocketbase_password(&self) -> &String {
+        &self.pocketbase_password
+    }
 }

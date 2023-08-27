@@ -13,4 +13,12 @@ impl ATIS {
             interval: 0,
         })
     }
+
+    pub fn get_webhook_report_endpoint(&self) -> &str {
+        &self.webhook_report_endpoint
+    }
+
+    pub fn get_interval(&self) -> u64 {
+        self.interval
+    }
 }
