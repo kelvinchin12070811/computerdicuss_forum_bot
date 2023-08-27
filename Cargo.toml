@@ -9,4 +9,5 @@ edition = "2021"
 lazy_static = "1.4.0"
 poise = "0.5.5"
 serde = "1.0.185"
+tokio = { version = "1.32.0", features = ["full"] }
 toml = "0.7.6"
