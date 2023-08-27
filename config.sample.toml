@@ -1,3 +1,13 @@
 token = ""
 app_id = ""
 guild_id = ""
+
+[database]
+pocketbase_domain = ""
+pocketbase_username = ""
+pocketbase_password = ""
+
+# Uncomment the folowing to enable status report to uptime kuma.
+# [atis]
+# webhook_report_endpoint = ""
+# interval = 0 # 0 to disable reporting
