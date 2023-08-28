@@ -8,6 +8,7 @@ mod types;
 
 use commands::*;
 use poise::serenity_prelude as serenity;
+use services::auth_service::AuthService;
 use services::config_service::ConfigService;
 use std::{
     fs::File,
@@ -25,8 +26,15 @@ async fn main() {
     let token: String;
 
     {
+        let mut auth_service = auth_service!();
+        println!("auth token: {}", auth_service.get_token());
+
         let cs = config_service!();
-        token = cs.get_document().get_token().clone();
+        token = cs.get_document().get_token().to_owned();
+        println!(
+            "pocket base url: {}",
+            cs.get_document().get_database().get_pocketbase_domain()
+        );
     }
 
     let framework = poise::Framework::builder()

@@ -16,15 +16,15 @@ impl Database {
         }
     }
 
-    pub fn get_pocketbase_domain(&self) -> &String {
+    pub fn get_pocketbase_domain(&self) -> &str {
         &self.pocketbase_domain
     }
 
-    pub fn get_pocketbase_username(&self) -> &String {
+    pub fn get_pocketbase_username(&self) -> &str {
         &self.pocketbase_username
     }
 
-    pub fn get_pocketbase_password(&self) -> &String {
+    pub fn get_pocketbase_password(&self) -> &str {
         &self.pocketbase_password
     }
 }

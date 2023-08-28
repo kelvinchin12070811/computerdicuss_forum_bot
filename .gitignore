@@ -396,3 +396,9 @@ FodyWeavers.xsd
 # Added by cargo
 
 /target
+
+# Pocket Base
+pocketbase.exe
+pocketbase
+pb_data
+pb_migrations

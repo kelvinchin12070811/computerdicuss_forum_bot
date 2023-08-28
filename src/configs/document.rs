@@ -22,15 +22,15 @@ impl Config {
         }
     }
 
-    pub fn get_token(&self) -> &String {
+    pub fn get_token(&self) -> &str {
         &self.token
     }
 
-    pub fn get_app_id(&self) -> &String {
+    pub fn get_app_id(&self) -> &str {
         &self.app_id
     }
 
-    pub fn get_guild_id(&self) -> &String {
+    pub fn get_guild_id(&self) -> &str {
         &self.guild_id
     }
 
