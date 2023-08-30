@@ -3,12 +3,13 @@ extern crate lazy_static;
 
 mod commands;
 mod configs;
+mod dtos;
 mod services;
 mod types;
 
 use commands::*;
 use poise::serenity_prelude as serenity;
-use services::auth_service::AuthService;
+use services::auth_service::{self, AuthService};
 use services::config_service::ConfigService;
 use std::{
     fs::File,
