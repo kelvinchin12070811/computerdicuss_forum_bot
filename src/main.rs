@@ -8,8 +8,10 @@ mod services;
 mod types;
 
 use commands::*;
+use env_logger::Builder;
+use log::{debug, info, LevelFilter};
 use poise::serenity_prelude as serenity;
-use services::auth_service::{self, AuthService};
+use services::auth_service;
 use services::config_service::ConfigService;
 use std::{
     fs::File,
@@ -20,22 +22,26 @@ use types::Data;
 
 #[tokio::main]
 async fn main() {
+    Builder::new()
+        .filter_module("computerdicuss_forum_bot", LevelFilter::Trace)
+        .init();
+
+    info!("Starting up");
+    info!("Reading configurations");
     let config_file_handler = File::open("config.toml").unwrap();
     let config_file_reader = BufReader::new(config_file_handler);
     let config_file = read_to_string(config_file_reader).unwrap();
     ConfigService::initialize(config_file);
-    let token: String;
+    let token = {
+        let cs = config_service!();
+        cs.get_document().get_token().to_owned()
+    };
+
+    debug!("bot token is: {}", token);
 
     {
-        let mut auth_service = auth_service!();
-        println!("auth token: {}", auth_service.get_token());
-
-        let cs = config_service!();
-        token = cs.get_document().get_token().to_owned();
-        println!(
-            "pocket base url: {}",
-            cs.get_document().get_database().get_pocketbase_domain()
-        );
+        let auth_token = auth_service::get_token().await;
+        debug!("auth token is: {}", auth_token);
     }
 
     let framework = poise::Framework::builder()
