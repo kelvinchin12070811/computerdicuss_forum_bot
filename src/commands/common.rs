@@ -1,8 +1,15 @@
 use super::super::types::{Context, Error};
+use chrono::prelude::*;
+use chrono::Duration;
 
 #[poise::command(slash_command)]
 pub async fn ping(ctx: Context<'_>) -> Result<(), Error> {
-    ctx.say("Pong!").await?;
+    let created = ctx.created_at();
+    let current = Utc::now();
+    let latency = current.timestamp_millis() - created.timestamp_millis();
+
+    ctx.say(format!(":ping_pong: Pong!\nArrived in `{} ms`", latency))
+        .await?;
     Ok(())
 }
 
