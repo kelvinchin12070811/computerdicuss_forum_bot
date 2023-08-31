@@ -1,16 +1,21 @@
+use log::{debug, error};
+
 use crate::{config_service, dtos::auth::Auth};
+use chrono::prelude::*;
 use std::{collections::HashMap, sync::Mutex};
 #[macro_use]
 use super::config_service::ConfigService;
 
 pub struct AuthService {
     token: String,
+    fetch_time: DateTime<Utc>,
 }
 
 impl AuthService {
     pub fn new() -> AuthService {
         AuthService {
-            token: "".to_owned(),
+            token: Default::default(),
+            fetch_time: Default::default(),
         }
     }
 
@@ -24,6 +29,14 @@ impl AuthService {
 
     pub fn set_token(&mut self, token: &str) {
         self.token = token.to_owned();
+    }
+
+    pub fn get_fetch_time(&self) -> &DateTime<Utc> {
+        &self.fetch_time
+    }
+
+    pub fn set_fetch_time(&mut self, fetch_time: DateTime<Utc>) {
+        self.fetch_time = fetch_time;
     }
 }
 
@@ -63,11 +76,12 @@ pub async fn login_db() {
                 Ok(data) => {
                     let mut auth_service = auth_service!();
                     auth_service.set_token(data.get_token());
+                    auth_service.set_fetch_time(Utc::now());
                 }
-                Err(error) => println!("{}", error),
+                Err(error) => error!("{}", error),
             }
         }
-        Err(error) => println!("{}", error),
+        Err(error) => error!("{}", error),
     }
 }
 

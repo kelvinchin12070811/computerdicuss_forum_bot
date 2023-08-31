@@ -12,6 +12,7 @@ use env_logger::Builder;
 use log::{debug, info, LevelFilter};
 use poise::serenity_prelude as serenity;
 use services::auth_service;
+use services::auth_service::AuthService;
 use services::config_service::ConfigService;
 use std::{
     fs::File,
@@ -41,7 +42,9 @@ async fn main() {
 
     {
         let auth_token = auth_service::get_token().await;
-        debug!("auth token is: {}", auth_token);
+        let auth_service = auth_service!();
+        debug!("auth token is : {}", auth_token);
+        debug!("fetched at    : {}", auth_service.get_fetch_time());
     }
 
     let framework = poise::Framework::builder()

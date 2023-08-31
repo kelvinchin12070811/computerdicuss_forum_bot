@@ -1,20 +1,3 @@
-// {
-//     "record": {
-//       "avatar": "",
-//       "collectionId": "_pb_users_auth_",
-//       "collectionName": "users",
-//       "created": "2023-08-28 17:51:33.004Z",
-//       "email": "",
-//       "emailVisibility": false,
-//       "id": "drbe82m6t68rnf3",
-//       "name": "bot",
-//       "updated": "2023-08-28 18:10:02.975Z",
-//       "username": "bot",
-//       "verified": true
-//     },
-//     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJleHAiOjE2OTQ2MzIyNDcsImlkIjoiZHJiZTgybTZ0NjhybmYzIiwidHlwZSI6ImF1dGhSZWNvcmQifQ.ilS6xaES5QQVvhrTos7rXpR64tPj2raxiP4Qj6t4yH4"
-//   }
-
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -34,6 +17,53 @@ pub struct Record {
     updated: String,
     username: String,
     verified: bool,
+}
+
+#[allow(dead_code)]
+impl Record {
+    pub fn get_avatar(&self) -> &str {
+        &self.avatar
+    }
+
+    pub fn get_collection_id(&self) -> &str {
+        &self.collection_id
+    }
+
+    pub fn get_collection_name(&self) -> &str {
+        &self.collection_name
+    }
+
+    pub fn get_created(&self) -> &str {
+        &self.created
+    }
+
+    pub fn get_email(&self) -> &str {
+        &self.email
+    }
+
+    pub fn get_email_visibility(&self) -> bool {
+        self.email_visibility
+    }
+
+    pub fn get_id(&self) -> &str {
+        &self.id
+    }
+
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+
+    pub fn get_updated(&self) -> &str {
+        &self.updated
+    }
+
+    pub fn get_username(&self) -> &str {
+        &self.username
+    }
+
+    pub fn get_verified(&self) -> bool {
+        self.verified
+    }
 }
 
 impl Default for Record {
