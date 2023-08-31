@@ -1,6 +1,5 @@
 use super::super::types::{Context, Error};
 use chrono::prelude::*;
-use chrono::Duration;
 
 #[poise::command(slash_command)]
 pub async fn ping(ctx: Context<'_>) -> Result<(), Error> {
