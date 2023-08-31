@@ -90,7 +90,8 @@ pub async fn login_db() {
 }
 
 pub async fn refresh_token() {
-    let configs = config_service!().get_document();
+    let config_service = config_service!();
+    let configs = config_service.get_document();
     let mut auth_service = auth_service!();
     let domain = configs.get_database().get_pocketbase_domain();
     let token = auth_service.get_token();
