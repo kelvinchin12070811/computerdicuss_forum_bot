@@ -47,9 +47,10 @@ async fn main() {
         debug!("fetched at    : {}", auth_service.get_fetch_time());
     }
 
+    info!("Initializing framework");
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![ping::ping()],
+            commands: get_commands::get_commands(),
             ..Default::default()
         })
         .token(token)
@@ -61,5 +62,6 @@ async fn main() {
             })
         });
 
+    info!("Connecting to Discord server");
     framework.run().await.unwrap();
 }
