@@ -1,3 +1,4 @@
+use log::info;
 use log::{debug, error};
 use tokio::sync::broadcast::error;
 
@@ -49,8 +50,11 @@ lazy_static! {
 #[macro_export]
 macro_rules! auth_service {
     () => {{
+        info!("Getting auth service");
         let auth_service = AuthService::instance();
+        info!("Got auth service, locking mutex");
         let auth_service = auth_service.lock().unwrap();
+        info!("Got it, returning auth service");
         auth_service
     }};
 }
@@ -127,13 +131,16 @@ pub async fn get_token() -> String {
         )
     };
 
+    info!("Checking db session");
     if token.is_empty() {
+        info!("No db auth session found, logging into db");
         login_db().await;
         let mut auth_service = auth_service!();
         return auth_service.get_token().to_owned();
     }
 
     if fetched_time.add(Duration::minutes(30)).timestamp() < Utc::now().timestamp() {
+        info!("DB Session expired, refreshing");
         refresh_token().await;
         let mut auth_service = auth_service!();
         return auth_service.get_token().to_owned();

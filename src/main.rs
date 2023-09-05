@@ -37,9 +37,6 @@ async fn main() {
         let cs = config_service!();
         cs.get_document().get_token().to_owned()
     };
-
-    debug!("bot token is: {}", token);
-
     {
         let auth_token = auth_service::get_token().await;
         let auth_service = auth_service!();

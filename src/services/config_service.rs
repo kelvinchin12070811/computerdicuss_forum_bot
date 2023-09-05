@@ -38,8 +38,11 @@ lazy_static! {
 #[macro_export]
 macro_rules! config_service {
     () => {{
+        info!("Getting config service");
         let config_service = ConfigService::instance();
+        info!("Got config service, locking mutex");
         let config_service = config_service.lock().unwrap();
+        info!("Got it, returning config service");
         config_service
     }};
 }
