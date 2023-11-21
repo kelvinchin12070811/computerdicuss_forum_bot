@@ -1,6 +1,10 @@
 # 電腦討論與分享區-多功能-机器人
 多功能一体化机器人
 
+# This Project Is Moving!
+There will be a new home for this project and is "useless" for most people, because I have no idea what it could do too!
+Head up to the [Useless Bot](https://github.com/kelvinchin12070811/useless-bot) for the next project!
+
 ## 初衷
 解决一些机器人因为需要Premium才能使用的问题
 减少机器人在群里
